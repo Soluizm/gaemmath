@@ -2,121 +2,113 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>🔧 Generator Horror</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Generator Horror</title>
     <style>
+        /* RESET MEMEK */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
             -webkit-touch-callout: none;
-            -webkit-user-select: none;
             user-select: none;
             touch-action: manipulation;
         }
         
-        body {
-            background: #000;
-            color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            position: fixed;
-            overscroll-behavior: none;
-        }
-        
-        #game-container {
+        html, body {
             width: 100%;
             height: 100%;
-            position: relative;
-            background: radial-gradient(circle at center, #111 0%, #000 100%);
+            overflow: hidden;
+            background: #000;
+            position: fixed;
+            font-family: 'Arial', sans-serif;
         }
         
-        /* LAYAR AWAL */
+        /* GAME CONTAINER */
+        #game-container {
+            width: 100vw;
+            height: 100vh;
+            max-width: 100%;
+            max-height: 100%;
+            position: relative;
+            background: #000;
+        }
+        
+        /* START SCREEN */
         #start-screen {
             position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #000 0%, #200 100%);
+            background: #000;
+            color: white;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             padding: 20px;
             text-align: center;
             z-index: 100;
         }
         
         #start-screen h1 {
-            color: #f00;
-            font-size: 2.5rem;
+            color: #ff0000;
+            font-size: clamp(24px, 8vw, 40px);
             margin-bottom: 10px;
-            text-shadow: 0 0 20px #f00;
-            letter-spacing: 2px;
-        }
-        
-        #start-screen h2 {
-            color: #fff;
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-            opacity: 0.9;
+            text-shadow: 0 0 10px #ff0000;
         }
         
         #start-screen p {
+            font-size: clamp(14px, 4vw, 18px);
             color: #aaa;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            margin-bottom: 15px;
+            margin: 10px 0;
+            line-height: 1.4;
             max-width: 500px;
         }
         
         #start-btn {
             margin-top: 30px;
-            padding: 18px 40px;
-            font-size: 1.2rem;
+            padding: 20px 40px;
+            font-size: clamp(16px, 5vw, 20px);
             background: #300;
             color: #f00;
             border: 3px solid #600;
-            border-radius: 15px;
+            border-radius: 10px;
             font-weight: bold;
-            cursor: pointer;
-            min-height: 60px;
             min-width: 200px;
-            transition: all 0.2s;
+            min-height: 60px;
         }
         
-        #start-btn:active {
-            background: #500;
-            transform: scale(0.95);
+        /* GAME SCREEN */
+        #game-screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: none;
+            background: #000;
         }
         
-        /* GENERATOR */
+        #game-screen.active {
+            display: block;
+        }
+        
+        /* GENERATOR - POSISI TENGAH */
         #generator {
             position: absolute;
-            top: 50%;
+            top: 40%;
             left: 50%;
             transform: translate(-50%, -50%);
             width: 90%;
             max-width: 400px;
             height: 180px;
             background: #222;
-            border: 4px solid #444;
-            border-radius: 15px;
-            box-shadow: 
-                0 0 30px rgba(255, 0, 0, 0.5),
-                inset 0 0 30px rgba(0, 0, 0, 0.8);
+            border: 3px solid #444;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 10;
         }
         
         .generator-panel {
@@ -124,7 +116,7 @@
             height: 85%;
             background: #111;
             border: 2px solid #333;
-            border-radius: 10px;
+            border-radius: 8px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -134,12 +126,11 @@
         }
         
         #math-problem {
-            font-size: 2rem;
-            color: #fff;
-            text-shadow: 0 0 10px #f00;
+            font-size: clamp(24px, 7vw, 32px);
+            color: white;
+            text-shadow: 0 0 5px #f00;
             font-weight: bold;
             text-align: center;
-            line-height: 1.3;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -147,117 +138,96 @@
         }
         
         #instructions {
-            font-size: 0.9rem;
+            font-size: clamp(14px, 4vw, 16px);
             color: #aaa;
             text-align: center;
-            line-height: 1.4;
         }
         
-        /* TOMBOL KONTROL */
-        #controls {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 20px;
-            width: 95%;
-            max-width: 500px;
-            justify-content: center;
-            z-index: 10;
-        }
-        
-        .control-btn {
-            flex: 1;
-            min-width: 140px;
-            height: 70px;
-            background: #222;
-            border: 3px solid #444;
-            color: #fff;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 15px;
-            cursor: pointer;
-            min-height: 70px;
-            transition: all 0.1s;
-            text-shadow: 0 0 5px #f00;
-        }
-        
-        .control-btn:active {
-            background: #333;
-            border-color: #f00;
-            transform: scale(0.95);
-        }
-        
-        /* PROGRESS BAR */
+        /* PROGRESS BAR - DI BAWAH GENERATOR */
         #progress-container {
             position: absolute;
-            bottom: 120px;
+            top: calc(40% + 100px); /* Bawah generator */
             left: 50%;
             transform: translateX(-50%);
             width: 80%;
-            max-width: 350px;
-            height: 20px;
+            max-width: 300px;
+            height: 15px;
             background: #111;
             border: 2px solid #333;
             border-radius: 10px;
             overflow: hidden;
-            z-index: 10;
         }
         
         #progress-bar {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #900 0%, #f00 100%);
+            background: #900;
             transition: width 0.3s;
-            box-shadow: 0 0 10px #f00;
         }
         
-        /* UI ELEMENTS */
+        /* TOMBOL KONTROL - DI BAWAH PROGRESS */
+        #controls {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 0 20px;
+        }
+        
+        .control-btn {
+            flex: 1;
+            max-width: 150px;
+            height: 70px;
+            background: #222;
+            border: 3px solid #444;
+            color: white;
+            font-size: clamp(14px, 4vw, 18px);
+            font-weight: bold;
+            border-radius: 10px;
+            min-height: 70px;
+        }
+        
+        /* UI ATAS */
         #timer {
             position: absolute;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 2.5rem;
+            font-size: clamp(28px, 8vw, 36px);
             color: #f00;
-            text-shadow: 0 0 15px #f00;
             font-weight: bold;
-            z-index: 10;
+            text-shadow: 0 0 10px #f00;
         }
         
         #score {
             position: absolute;
             top: 20px;
             right: 20px;
-            font-size: 1.2rem;
-            color: #fff;
-            text-shadow: 0 0 5px #f00;
-            z-index: 10;
+            font-size: clamp(16px, 4vw, 20px);
+            color: white;
         }
         
         #heartbeat {
             position: absolute;
             top: 20px;
             left: 20px;
-            font-size: 1.5rem;
+            font-size: clamp(20px, 6vw, 24px);
             color: #f00;
-            z-index: 10;
             animation: heartbeat 1s infinite;
         }
         
-        /* ENTITY HORROR */
+        /* ENTITY */
         #entity {
             position: absolute;
-            width: 100px;
-            height: 150px;
-            background: transparent;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 150"><path d="M50,10 C70,10 85,30 85,60 C85,80 75,95 60,110 L60,140 L40,140 L40,110 C25,95 15,80 15,60 C15,30 30,10 50,10 Z" fill="rgba(20,0,0,0.9)"/><circle cx="40" cy="50" r="6" fill="rgba(255,0,0,0.8)"/><circle cx="60" cy="50" r="6" fill="rgba(255,0,0,0.8)"/><path d="M50,80 Q55,95 50,110 Q45,95 50,80 Z" fill="rgba(150,0,0,0.9)"/></svg>');
-            background-repeat: no-repeat;
-            background-size: contain;
-            filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.8));
-            z-index: 5;
+            width: 80px;
+            height: 120px;
+            background: #400;
+            border-radius: 50%;
             opacity: 0;
+            z-index: 5;
             transition: opacity 0.3s;
         }
         
@@ -265,98 +235,56 @@
             opacity: 1 !important;
         }
         
-        .jumpscare {
-            animation: jumpscare 0.5s forwards;
-        }
-        
-        /* LAYAR HASIL */
+        /* SCREEN RESULTS */
         #win-screen, #game-over-screen {
             position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            display: flex;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            padding: 20px;
+            justify-content: center;
             text-align: center;
-            z-index: 100;
+            padding: 20px;
+            z-index: 200;
+        }
+        
+        #win-screen.active, #game-over-screen.active {
+            display: flex;
         }
         
         #win-screen {
             background: rgba(0, 30, 0, 0.95);
         }
         
-        #game-over-screen {
-            background: rgba(30, 0, 0, 0.95);
+        #win-text, #game-over-text {
+            font-size: clamp(28px, 8vw, 40px);
+            margin-bottom: 20px;
         }
         
         #win-text {
             color: #0f0;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            text-shadow: 0 0 20px #0f0;
         }
         
         #game-over-text {
             color: #f00;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            text-shadow: 0 0 20px #f00;
         }
         
         #final-score, #final-score-win {
-            font-size: 1.8rem;
+            font-size: clamp(20px, 6vw, 28px);
+            color: white;
             margin: 15px 0;
-            color: #fff;
-        }
-        
-        #congrats-message {
-            color: #afa;
-            font-size: 1.1rem;
-            max-width: 90%;
-            line-height: 1.5;
-            margin: 15px 0;
-        }
-        
-        #final-message {
-            color: #faa;
-            font-size: 1.1rem;
-            max-width: 90%;
-            line-height: 1.5;
-            margin: 15px 0;
-        }
-        
-        #stats {
-            background: rgba(0, 50, 0, 0.7);
-            border: 2px solid #0a0;
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            max-width: 90%;
-            width: 320px;
-        }
-        
-        .stat-item {
-            color: #cfc;
-            font-size: 1rem;
-            margin: 10px 0;
-            display: flex;
-            justify-content: space-between;
         }
         
         #win-btn, #restart-btn {
-            margin-top: 20px;
-            padding: 18px 40px;
-            font-size: 1.2rem;
-            border-radius: 15px;
+            margin-top: 30px;
+            padding: 20px 40px;
+            font-size: clamp(16px, 5vw, 20px);
+            border-radius: 10px;
             font-weight: bold;
-            cursor: pointer;
-            min-height: 60px;
             min-width: 200px;
-            transition: all 0.2s;
+            min-height: 60px;
         }
         
         #win-btn {
@@ -371,32 +299,27 @@
             border: 3px solid #600;
         }
         
-        #win-btn:active, #restart-btn:active {
-            transform: scale(0.95);
-        }
-        
         /* TOGGLE BUTTONS */
         #sound-toggle, #fullscreen-btn {
             position: absolute;
-            top: 15px;
+            top: 10px;
             background: rgba(0,0,0,0.7);
-            color: #aaa;
+            color: white;
             border: 2px solid #444;
-            padding: 12px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            z-index: 100;
-            font-size: 1.2rem;
-            min-height: 50px;
-            min-width: 50px;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 300;
+            font-size: 20px;
+            width: 50px;
+            height: 50px;
         }
         
         #sound-toggle {
-            right: 15px;
+            right: 10px;
         }
         
         #fullscreen-btn {
-            left: 15px;
+            left: 10px;
         }
         
         /* ANIMATIONS */
@@ -406,245 +329,206 @@
             100% { transform: scale(1); }
         }
         
-        @keyframes jumpscare {
-            0% { transform: scale(1); filter: brightness(1); }
-            50% { transform: scale(1.5); filter: brightness(2); }
-            100% { transform: scale(1); filter: brightness(1); }
-        }
-        
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+        .danger-close {
+            animation: danger 0.5s infinite;
         }
         
         @keyframes danger {
-            0%, 100% { box-shadow: 0 0 30px rgba(255, 0, 0, 0.5); }
-            50% { box-shadow: 0 0 50px rgba(255, 0, 0, 0.9); }
+            0%, 100% { box-shadow: 0 0 30px rgba(255,0,0,0.5); }
+            50% { box-shadow: 0 0 50px rgba(255,0,0,0.8); }
         }
         
-        .danger-close {
-            animation: danger 0.8s infinite;
-        }
-        
-        .blink {
-            animation: flicker 0.5s infinite;
-        }
-        
-        .flash {
-            animation: flash 0.2s;
-        }
-        
-        @keyframes flash {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        /* HIDDEN CLASS */
-        .hidden {
-            display: none !important;
-        }
-        
-        /* FIREWORKS EFFECT */
-        .firework {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            animation: firework 1.5s forwards;
-        }
-        
-        @keyframes firework {
-            0% {
-                transform: translateY(100vh) scale(0);
-                opacity: 0;
+        /* MEDIA QUERIES BUAT SEMUA HP */
+        /* Portrait */
+        @media (orientation: portrait) {
+            #generator {
+                top: 35%;
+                height: 160px;
             }
-            50% {
-                opacity: 1;
+            
+            #progress-container {
+                top: calc(35% + 90px);
             }
-            100% {
-                transform: translateY(0) scale(1);
-                opacity: 0;
+            
+            .control-btn {
+                height: 65px;
+                min-height: 65px;
             }
         }
         
-        /* SCAN LINES EFFECT */
-        #scanlines {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                to bottom,
-                transparent 50%,
-                rgba(0, 0, 0, 0.2) 50%
-            );
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 1;
-            opacity: 0.3;
+        /* Landscape */
+        @media (orientation: landscape) and (max-height: 500px) {
+            #generator {
+                top: 30%;
+                height: 140px;
+                width: 80%;
+            }
+            
+            #progress-container {
+                top: calc(30% + 80px);
+            }
+            
+            #controls {
+                bottom: 20px;
+            }
+            
+            .control-btn {
+                height: 60px;
+                min-height: 60px;
+                max-width: 120px;
+            }
+            
+            #timer {
+                top: 10px;
+                font-size: 24px;
+            }
+            
+            #score, #heartbeat {
+                top: 10px;
+                font-size: 16px;
+            }
         }
         
-        /* VIGNETTE EFFECT */
-        #vignette {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(
-                ellipse at center,
-                transparent 40%,
-                rgba(0, 0, 0, 0.8) 100%
-            );
-            pointer-events: none;
-            z-index: 1;
+        /* HP KECIL */
+        @media (max-height: 600px) {
+            #generator {
+                top: 30%;
+                height: 140px;
+            }
+            
+            #progress-container {
+                top: calc(30% + 80px);
+            }
+            
+            .generator-panel {
+                padding: 10px;
+                gap: 10px;
+            }
+            
+            #math-problem {
+                font-size: 20px;
+            }
+            
+            #instructions {
+                font-size: 14px;
+            }
+        }
+        
+        /* TABLET */
+        @media (min-width: 768px) and (min-height: 700px) {
+            #generator {
+                height: 200px;
+                max-width: 450px;
+            }
+            
+            .control-btn {
+                max-width: 180px;
+                height: 80px;
+                font-size: 20px;
+            }
+            
+            #math-problem {
+                font-size: 32px;
+            }
         }
     </style>
 </head>
 <body>
     <div id="game-container">
-        <!-- SCAN LINES & VIGNETTE -->
-        <div id="scanlines"></div>
-        <div id="vignette"></div>
-        
         <!-- START SCREEN -->
         <div id="start-screen">
             <h1>🔧 GENERATOR HORROR</h1>
-            <h2>Perbaiki Generator - Lari dari Entitas!</h2>
-            <p><strong>🎮 CARA MAIN:</strong><br>
-            • Jawab soal matematika dengan cepat<br>
-            • Pilih LEBIH BESAR atau LEBIH KECIL<br>
-            • Perbaiki generator sebelum entitas menangkapmu!</p>
-            <p><strong>⚠️ PERINGATAN:</strong><br>
-            • Entitas akan semakin dekat<br>
-            • Waktu terbatas<br>
-            • Salah jawab = entitas lebih dekat!</p>
+            <p>Perbaiki generator dengan menjawab soal matematika sebelum entitas menangkapmu!</p>
+            <p><strong>Cara main:</strong> Pilih mana yang lebih besar atau lebih kecil dari dua operasi perkalian.</p>
+            <p>Jawab cepat sebelum waktu habis!</p>
             <button id="start-btn">🚀 MULAI GAME</button>
         </div>
         
-        <!-- WIN SCREEN -->
-        <div id="win-screen" class="hidden">
-            <h1 id="win-text">🎉 GENERATOR SELESAI!</h1>
-            <p id="final-score-win">Skor: 0</p>
-            <p id="congrats-message">Kamu berhasil melarikan diri!</p>
-            <div id="stats">
-                <div class="stat-item">
-                    <span>Soal:</span>
-                    <span id="stat-questions">0</span>
-                </div>
-                <div class="stat-item">
-                    <span>Akurasi:</span>
-                    <span id="stat-accuracy">0%</span>
-                </div>
-                <div class="stat-item">
-                    <span>Waktu:</span>
-                    <span id="stat-time">0s</span>
+        <!-- GAME SCREEN -->
+        <div id="game-screen">
+            <button id="fullscreen-btn">📱</button>
+            <button id="sound-toggle">🔊</button>
+            
+            <div id="heartbeat">❤️</div>
+            <div id="timer">60</div>
+            <div id="score">Skor: 0</div>
+            
+            <div id="entity"></div>
+            
+            <div id="generator">
+                <div class="generator-panel">
+                    <div id="math-problem">12 × 6 ______ 8 × 9</div>
+                    <div id="instructions">Pilih mana yang lebih besar atau lebih kecil</div>
                 </div>
             </div>
+            
+            <div id="progress-container">
+                <div id="progress-bar"></div>
+            </div>
+            
+            <div id="controls">
+                <button class="control-btn" id="greater-btn">📈 LEBIH BESAR</button>
+                <button class="control-btn" id="lesser-btn">📉 LEBIH KECIL</button>
+            </div>
+        </div>
+        
+        <!-- WIN SCREEN -->
+        <div id="win-screen">
+            <h1 id="win-text">🎉 MENANG!</h1>
+            <p id="final-score-win">Skor: 0</p>
+            <p>Generator berhasil diperbaiki!</p>
             <button id="win-btn">🔄 MAIN LAGI</button>
         </div>
         
         <!-- GAME OVER SCREEN -->
-        <div id="game-over-screen" class="hidden">
+        <div id="game-over-screen">
             <h1 id="game-over-text">💀 GAME OVER</h1>
             <p id="final-score">Skor: 0</p>
-            <p id="final-message">Entitas menangkapmu...</p>
+            <p>Entitas menangkapmu...</p>
             <button id="restart-btn">🔄 COBA LAGI</button>
-        </div>
-        
-        <!-- GAME UI -->
-        <button id="fullscreen-btn">📱</button>
-        <button id="sound-toggle">🔊</button>
-        
-        <div id="heartbeat">❤️</div>
-        <div id="timer">60</div>
-        <div id="score">Skor: 0</div>
-        
-        <!-- ENTITY -->
-        <div id="entity"></div>
-        
-        <!-- GENERATOR -->
-        <div id="generator">
-            <div class="generator-panel">
-                <div id="math-problem">12 × 6 ______ 8 × 9</div>
-                <div id="instructions">Pilih mana yang lebih besar atau lebih kecil</div>
-            </div>
-        </div>
-        
-        <!-- PROGRESS -->
-        <div id="progress-container">
-            <div id="progress-bar"></div>
-        </div>
-        
-        <!-- CONTROLS -->
-        <div id="controls">
-            <button class="control-btn" id="greater-btn">📈 LEBIH BESAR</button>
-            <button class="control-btn" id="lesser-btn">📉 LEBIH KECIL</button>
         </div>
     </div>
 
     <script>
-        // ==================== INITIALIZATION ====================
-        const isAndroid = /Android/i.test(navigator.userAgent);
+        // SIMPLE FIXED GAME LOGIC
+        const startScreen = document.getElementById('start-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const winScreen = document.getElementById('win-screen');
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const startBtn = document.getElementById('start-btn');
+        const winBtn = document.getElementById('win-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const timerEl = document.getElementById('timer');
+        const scoreEl = document.getElementById('score');
+        const mathProblem = document.getElementById('math-problem');
+        const progressBar = document.getElementById('progress-bar');
+        const greaterBtn = document.getElementById('greater-btn');
+        const lesserBtn = document.getElementById('lesser-btn');
+        const entity = document.getElementById('entity');
+        const soundToggle = document.getElementById('sound-toggle');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const finalScore = document.getElementById('final-score');
+        const finalScoreWin = document.getElementById('final-score-win');
         
-        // DOM Elements
-        const elements = {
-            startScreen: document.getElementById('start-screen'),
-            winScreen: document.getElementById('win-screen'),
-            gameOverScreen: document.getElementById('game-over-screen'),
-            startBtn: document.getElementById('start-btn'),
-            winBtn: document.getElementById('win-btn'),
-            restartBtn: document.getElementById('restart-btn'),
-            timer: document.getElementById('timer'),
-            score: document.getElementById('score'),
-            mathProblem: document.getElementById('math-problem'),
-            progressBar: document.getElementById('progress-bar'),
-            greaterBtn: document.getElementById('greater-btn'),
-            lesserBtn: document.getElementById('lesser-btn'),
-            entity: document.getElementById('entity'),
-            soundToggle: document.getElementById('sound-toggle'),
-            fullscreenBtn: document.getElementById('fullscreen-btn'),
-            finalScore: document.getElementById('final-score'),
-            finalScoreWin: document.getElementById('final-score-win'),
-            congratsMessage: document.getElementById('congrats-message'),
-            finalMessage: document.getElementById('final-message'),
-            statQuestions: document.getElementById('stat-questions'),
-            statAccuracy: document.getElementById('stat-accuracy'),
-            statTime: document.getElementById('stat-time'),
-            heartbeat: document.getElementById('heartbeat')
-        };
+        // GAME STATE
+        let score = 0;
+        let timeLeft = 60;
+        let progress = 0;
+        let gameActive = false;
+        let timerInterval;
+        let entityDistance = 100;
+        let entitySpeed = 2;
+        let soundEnabled = true;
+        let problemsSolved = 0;
+        let totalQuestions = 0;
+        let correctAnswers = 0;
+        let currentProblem = null;
         
-        // Game State
-        let gameState = {
-            score: 0,
-            timeLeft: 60,
-            progress: 0,
-            active: false,
-            entityDistance: 100,
-            entitySpeed: 2,
-            soundEnabled: true,
-            problemsSolved: 0,
-            totalQuestions: 0,
-            correctAnswers: 0,
-            currentProblem: null,
-            timerInterval: null
-        };
-        
-        // ==================== AUDIO SYSTEM ====================
-        let audioContext;
-        
-        function initAudio() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-        }
-        
-        function playSound(freq, dur, type = 'sine', vol = 0.3) {
-            if (!gameState.soundEnabled) return;
-            
+        // SOUND FUNCTIONS
+        function playSound(freq, duration) {
+            if (!soundEnabled) return;
             try {
-                initAudio();
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
                 
@@ -652,367 +536,249 @@
                 gainNode.connect(audioContext.destination);
                 
                 oscillator.frequency.value = freq;
-                oscillator.type = type;
-                gainNode.gain.value = vol;
+                oscillator.type = 'sine';
+                gainNode.gain.value = 0.2;
                 
                 oscillator.start();
-                oscillator.stop(audioContext.currentTime + dur);
-            } catch(e) {
-                console.log("Audio error:", e);
-            }
+                oscillator.stop(audioContext.currentTime + duration);
+            } catch(e) {}
         }
         
-        // ==================== GAME FUNCTIONS ====================
-        function generateProblem() {
-            // Generate random numbers 2-12
-            const nums = [
-                Math.floor(Math.random() * 11) + 2,
-                Math.floor(Math.random() * 11) + 2,
-                Math.floor(Math.random() * 11) + 2,
-                Math.floor(Math.random() * 11) + 2
-            ];
+        // GENERATE MATH PROBLEM
+        function generateMathProblem() {
+            const leftNum1 = Math.floor(Math.random() * 12) + 2;
+            const leftNum2 = Math.floor(Math.random() * 12) + 2;
+            const rightNum1 = Math.floor(Math.random() * 12) + 2;
+            const rightNum2 = Math.floor(Math.random() * 12) + 2;
             
-            const leftResult = nums[0] * nums[1];
-            const rightResult = nums[2] * nums[3];
+            const leftResult = leftNum1 * leftNum2;
+            const rightResult = rightNum1 * rightNum2;
             
             // Ensure different results
             if (leftResult === rightResult) {
-                nums[3] = (nums[3] % 11) + 2;
-                return generateProblem();
+                return generateMathProblem();
             }
             
-            gameState.currentProblem = {
-                left: { num1: nums[0], num2: nums[1], result: leftResult },
-                right: { num1: nums[2], num2: nums[3], result: rightResult },
+            currentProblem = {
+                left: { num1: leftNum1, num2: leftNum2, result: leftResult },
+                right: { num1: rightNum1, num2: rightNum2, result: rightResult },
                 correctAnswer: leftResult > rightResult ? 'greater' : 'lesser'
             };
             
-            // Display problem (FIXED: Shows TWO operations)
-            elements.mathProblem.textContent = 
-                `${nums[0]} × ${nums[1]} ______ ${nums[2]} × ${nums[3]}`;
+            // DISPLAY BOTH OPERATIONS
+            mathProblem.textContent = `${leftNum1} × ${leftNum2} ______ ${rightNum1} × ${rightNum2}`;
             
-            elements.mathProblem.classList.remove('flash');
-            void elements.mathProblem.offsetWidth;
-            elements.mathProblem.classList.add('flash');
-            
-            gameState.totalQuestions++;
-            
-            // Sound effect
-            playSound(400, 0.1, 'sine', 0.1);
-            playSound(500, 0.1, 'sine', 0.1);
+            totalQuestions++;
+            playSound(400, 0.1);
         }
         
+        // CHECK ANSWER
         function checkAnswer(answer) {
-            if (!gameState.active) return;
+            if (!gameActive) return;
             
-            playSound(300, 0.1, 'square', 0.2);
+            playSound(300, 0.1);
             
-            const correct = answer === gameState.currentProblem.correctAnswer;
-            
-            if (correct) {
-                // Correct answer
-                gameState.score += 10;
-                gameState.progress += 10;
-                gameState.problemsSolved++;
-                gameState.correctAnswers++;
+            if (answer === currentProblem.correctAnswer) {
+                // Correct
+                score += 10;
+                progress += 10;
+                problemsSolved++;
+                correctAnswers++;
                 
-                elements.progressBar.style.width = `${gameState.progress}%`;
-                elements.score.textContent = `Skor: ${gameState.score}`;
+                progressBar.style.width = `${progress}%`;
+                scoreEl.textContent = `Skor: ${score}`;
                 
-                playSound(800, 0.2, 'sine', 0.3);
+                playSound(800, 0.2);
                 
-                // Win condition
-                if (gameState.progress >= 100) {
+                if (progress >= 100) {
                     winGame();
                     return;
                 }
                 
-                // Every 5 correct answers increase difficulty
-                if (gameState.problemsSolved % 5 === 0) {
-                    gameState.entitySpeed += 0.5;
-                    gameState.timeLeft = Math.min(gameState.timeLeft + 5, 60);
+                generateMathProblem();
+                
+                if (problemsSolved % 5 === 0) {
+                    entitySpeed += 0.5;
+                    timeLeft = Math.min(timeLeft + 5, 60);
                 }
-                
-                generateProblem();
             } else {
-                // Wrong answer
-                gameState.progress = Math.max(0, gameState.progress - 15);
-                elements.progressBar.style.width = `${gameState.progress}%`;
+                // Wrong
+                progress = Math.max(0, progress - 15);
+                progressBar.style.width = `${progress}%`;
                 
-                playSound(150, 0.3, 'sawtooth', 0.4);
-                gameState.entityDistance = Math.max(0, gameState.entityDistance - 20);
+                playSound(150, 0.3);
+                entityDistance = Math.max(0, entityDistance - 20);
             }
             
             updateEntity();
         }
         
+        // UPDATE ENTITY POSITION
         function updateEntity() {
-            gameState.entityDistance = Math.max(0, gameState.entityDistance - gameState.entitySpeed);
+            entityDistance = Math.max(0, entityDistance - entitySpeed);
             
-            const distancePercent = gameState.entityDistance / 100;
+            // Position entity based on distance
+            const leftPos = 50 + (50 * (entityDistance / 100));
+            const topPos = 30 + (40 * (entityDistance / 100));
+            const size = 80 + (40 * (1 - entityDistance / 100));
             
-            // Position entity
-            const leftPos = 50 + (50 * distancePercent);
-            const topPos = 30 + (40 * distancePercent);
-            const size = 80 + (40 * (1 - distancePercent));
+            entity.style.left = `${leftPos}%`;
+            entity.style.top = `${topPos}%`;
+            entity.style.width = `${size}px`;
+            entity.style.height = `${size * 1.5}px`;
             
-            elements.entity.style.left = `${leftPos}%`;
-            elements.entity.style.top = `${topPos}%`;
-            elements.entity.style.width = `${size}px`;
-            elements.entity.style.height = `${size * 1.5}px`;
-            
-            // Show/hide based on distance
-            if (gameState.entityDistance < 30) {
-                elements.entity.classList.add('entity-visible');
+            if (entityDistance < 30) {
+                entity.classList.add('entity-visible');
                 
-                if (gameState.entityDistance < 10) {
-                    document.getElementById('game-container').classList.add('danger-close');
-                    elements.heartbeat.classList.add('blink');
-                    playSound(80, 0.1, 'sine', 0.2);
+                if (entityDistance < 10) {
+                    gameScreen.classList.add('danger-close');
+                    playSound(80, 0.1);
                 } else {
-                    document.getElementById('game-container').classList.remove('danger-close');
-                    elements.heartbeat.classList.remove('blink');
+                    gameScreen.classList.remove('danger-close');
                 }
             } else {
-                elements.entity.classList.remove('entity-visible');
-                document.getElementById('game-container').classList.remove('danger-close');
-                elements.heartbeat.classList.remove('blink');
+                entity.classList.remove('entity-visible');
+                gameScreen.classList.remove('danger-close');
             }
             
-            // Game over if entity catches you
-            if (gameState.entityDistance <= 0) {
+            if (entityDistance <= 0) {
                 gameOver();
             }
         }
         
+        // UPDATE TIMER
         function updateTimer() {
-            if (!gameState.active) return;
+            if (!gameActive) return;
             
-            gameState.timeLeft--;
-            elements.timer.textContent = gameState.timeLeft;
+            timeLeft--;
+            timerEl.textContent = timeLeft;
             
-            // Blink when time is low
-            if (gameState.timeLeft <= 10) {
-                elements.timer.classList.add('blink');
-                playSound(200, 0.1, 'sine', 0.2);
-            } else {
-                elements.timer.classList.remove('blink');
+            if (timeLeft <= 10) {
+                timerEl.style.color = '#ff0000';
+                playSound(200, 0.1);
             }
             
-            // Time's up
-            if (gameState.timeLeft <= 0) {
+            if (timeLeft <= 0) {
                 gameOver();
             }
         }
         
+        // START GAME
         function startGame() {
-            // Hide screens
-            elements.startScreen.classList.add('hidden');
-            elements.winScreen.classList.add('hidden');
-            elements.gameOverScreen.classList.add('hidden');
+            startScreen.style.display = 'none';
+            gameScreen.classList.add('active');
+            winScreen.classList.remove('active');
+            gameOverScreen.classList.remove('active');
             
-            // Reset state
-            gameState = {
-                score: 0,
-                timeLeft: 60,
-                progress: 0,
-                active: true,
-                entityDistance: 100,
-                entitySpeed: 2,
-                soundEnabled: true,
-                problemsSolved: 0,
-                totalQuestions: 0,
-                correctAnswers: 0,
-                currentProblem: null,
-                timerInterval: null
-            };
+            gameActive = true;
+            score = 0;
+            timeLeft = 60;
+            progress = 0;
+            entityDistance = 100;
+            entitySpeed = 2;
+            problemsSolved = 0;
+            totalQuestions = 0;
+            correctAnswers = 0;
             
-            // Update UI
-            elements.score.textContent = `Skor: 0`;
-            elements.timer.textContent = '60';
-            elements.progressBar.style.width = '0%';
-            elements.soundToggle.textContent = '🔊';
+            scoreEl.textContent = `Skor: ${score}`;
+            timerEl.textContent = timeLeft;
+            timerEl.style.color = '#ff0000';
+            progressBar.style.width = '0%';
             
-            // Start game
-            generateProblem();
+            generateMathProblem();
             
-            clearInterval(gameState.timerInterval);
-            gameState.timerInterval = setInterval(updateTimer, 1000);
+            clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
             
-            // Game loop
             const gameLoop = setInterval(() => {
-                if (!gameState.active) {
+                if (!gameActive) {
                     clearInterval(gameLoop);
                     return;
                 }
                 updateEntity();
             }, 1000);
             
-            playSound(100, 0.5, 'sine', 0.1);
+            playSound(100, 0.5);
         }
         
+        // WIN GAME
         function winGame() {
-            gameState.active = false;
-            clearInterval(gameState.timerInterval);
+            gameActive = false;
+            clearInterval(timerInterval);
             
-            // Victory sounds
-            playSound(800, 0.5, 'sine', 0.5);
-            playSound(1000, 0.5, 'sine', 0.5);
-            playSound(1200, 0.5, 'sine', 0.5);
+            playSound(800, 0.5);
+            playSound(1000, 0.5);
+            playSound(1200, 0.5);
             
-            // Update stats
-            elements.finalScoreWin.textContent = `Skor: ${gameState.score}`;
-            elements.statQuestions.textContent = gameState.problemsSolved;
-            elements.statAccuracy.textContent = gameState.totalQuestions > 0 ? 
-                Math.round((gameState.correctAnswers / gameState.totalQuestions) * 100) + '%' : '0%';
-            elements.statTime.textContent = `${gameState.timeLeft}s`;
+            finalScoreWin.textContent = `Skor: ${score}`;
             
-            // Show win screen
             setTimeout(() => {
-                elements.winScreen.classList.remove('hidden');
+                gameScreen.classList.remove('active');
+                winScreen.classList.add('active');
             }, 1500);
         }
         
+        // GAME OVER
         function gameOver() {
-            gameState.active = false;
-            clearInterval(gameState.timerInterval);
+            gameActive = false;
+            clearInterval(timerInterval);
             
-            // Jumpscare
-            elements.entity.classList.add('jumpscare');
-            playSound(50, 0.8, 'sawtooth', 0.7);
+            entity.classList.add('jumpscare');
+            playSound(50, 0.8);
             
-            // Update score
-            elements.finalScore.textContent = `Skor: ${gameState.score}`;
+            finalScore.textContent = `Skor: ${score}`;
             
-            // Random game over messages
-            const messages = [
-                "Entitas menangkapmu...",
-                "Terlalu lambat!",
-                "Generator meledak!",
-                "Kamu terjebak!"
-            ];
-            elements.finalMessage.textContent = messages[Math.floor(Math.random() * messages.length)];
-            
-            // Show game over screen
             setTimeout(() => {
-                elements.gameOverScreen.classList.remove('hidden');
+                gameScreen.classList.remove('active');
+                gameOverScreen.classList.add('active');
             }, 1500);
         }
         
-        // ==================== EVENT LISTENERS ====================
-        // Button events
-        elements.startBtn.addEventListener('click', startGame);
-        elements.winBtn.addEventListener('click', startGame);
-        elements.restartBtn.addEventListener('click', startGame);
+        // EVENT LISTENERS
+        startBtn.addEventListener('click', startGame);
+        winBtn.addEventListener('click', startGame);
+        restartBtn.addEventListener('click', startGame);
         
-        elements.greaterBtn.addEventListener('click', () => checkAnswer('greater'));
-        elements.lesserBtn.addEventListener('click', () => checkAnswer('lesser'));
+        greaterBtn.addEventListener('click', () => checkAnswer('greater'));
+        lesserBtn.addEventListener('click', () => checkAnswer('lesser'));
         
-        // Touch feedback for mobile
-        elements.greaterBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            elements.greaterBtn.classList.add('flash');
+        soundToggle.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
+            if (soundEnabled) playSound(600, 0.1);
         });
         
-        elements.lesserBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            elements.lesserBtn.classList.add('flash');
-        });
-        
-        // Sound toggle
-        elements.soundToggle.addEventListener('click', () => {
-            gameState.soundEnabled = !gameState.soundEnabled;
-            elements.soundToggle.textContent = gameState.soundEnabled ? '🔊' : '🔇';
-            
-            if (gameState.soundEnabled) {
-                playSound(600, 0.1, 'sine', 0.2);
-            }
-        });
-        
-        // Fullscreen toggle
-        elements.fullscreenBtn.addEventListener('click', () => {
+        fullscreenBtn.addEventListener('click', () => {
             const container = document.getElementById('game-container');
-            
             if (!document.fullscreenElement) {
-                if (container.requestFullscreen) {
-                    container.requestFullscreen();
-                } else if (container.webkitRequestFullscreen) {
-                    container.webkitRequestFullscreen();
-                }
-                elements.fullscreenBtn.textContent = '📱';
+                container.requestFullscreen().catch(err => {
+                    console.log('Fullscreen error:', err);
+                });
             } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                }
-                elements.fullscreenBtn.textContent = '📱';
+                document.exitFullscreen();
             }
         });
         
-        // Keyboard support for testing
+        // KEYBOARD SUPPORT
         document.addEventListener('keydown', (e) => {
-            if (!gameState.active) return;
+            if (!gameActive) return;
             
             if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
                 checkAnswer('greater');
-                elements.greaterBtn.classList.add('flash');
-                setTimeout(() => elements.greaterBtn.classList.remove('flash'), 200);
             } else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
                 checkAnswer('lesser');
-                elements.lesserBtn.classList.add('flash');
-                setTimeout(() => elements.lesserBtn.classList.remove('flash'), 200);
             }
         });
         
-        // ==================== MOBILE OPTIMIZATIONS ====================
-        // Prevent zoom
-        document.addEventListener('touchmove', (e) => {
-            if (e.scale !== 1) e.preventDefault();
-        }, { passive: false });
-        
-        // Prevent context menu
-        document.addEventListener('contextmenu', (e) => e.preventDefault());
-        
-        // Disable pull-to-refresh
+        // MOBILE TOUCH OPTIMIZATIONS
         document.addEventListener('touchstart', (e) => {
             if (e.touches.length > 1) e.preventDefault();
         }, { passive: false });
         
-        // Handle back button on Android
-        if (isAndroid) {
-            window.addEventListener('beforeunload', (e) => {
-                if (gameState.active) {
-                    e.preventDefault();
-                    e.returnValue = 'Game sedang berjalan. Yakin ingin keluar?';
-                }
-            });
-        }
-        
-        // Orientation lock suggestion
-        if (window.screen.orientation && window.screen.orientation.lock) {
-            window.screen.orientation.lock('portrait').catch(() => {});
-        }
-        
-        // ==================== INITIALIZE ====================
+        // INIT
         window.addEventListener('load', () => {
-            // Start audio context on first touch (for iOS)
-            document.body.addEventListener('touchstart', () => {
-                initAudio();
-            }, { once: true });
-            
-            // Auto-suggest fullscreen on mobile
-            if (isAndroid) {
-                setTimeout(() => {
-                    playSound(200, 0.2, 'sine', 0.1);
-                    playSound(300, 0.2, 'sine', 0.1);
-                }, 1000);
-            }
-        });
-        
-        // Handle orientation changes
-        window.addEventListener('orientationchange', () => {
-            setTimeout(() => location.reload(), 100);
+            // Auto start for testing
+            // startGame();
         });
     </script>
 </body>
