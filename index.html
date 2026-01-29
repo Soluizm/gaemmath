@@ -3,110 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Generator's Nightmare</title>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>🔧 Generator Horror</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Courier New', monospace;
             -webkit-tap-highlight-color: transparent;
             -webkit-touch-callout: none;
             -webkit-user-select: none;
             user-select: none;
+            touch-action: manipulation;
         }
         
         body {
-            background-color: #0a0a0a;
-            color: #e0e0e0;
-            overflow: hidden;
+            background: #000;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             height: 100vh;
             width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            touch-action: manipulation;
+            overflow: hidden;
+            position: fixed;
+            overscroll-behavior: none;
         }
         
         #game-container {
             width: 100%;
             height: 100%;
-            max-width: 500px;
-            max-height: 900px;
             position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 30px rgba(139, 0, 0, 0.5);
+            background: radial-gradient(circle at center, #111 0%, #000 100%);
         }
         
-        @media (min-width: 768px) {
-            #game-container {
-                width: 90%;
-                height: 90%;
-                max-width: 900px;
-                max-height: 600px;
-            }
-        }
-        
-        #game-screen {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            background-image: radial-gradient(circle at 30% 20%, #111 0%, #000 70%);
-        }
-        
-        #game-overlay {
+        /* LAYAR AWAL */
+        #start-screen {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            z-index: 10;
-            background: 
-                repeating-linear-gradient(
-                    0deg,
-                    rgba(0, 0, 0, 0.15) 0px,
-                    rgba(0, 0, 0, 0.15) 1px,
-                    transparent 1px,
-                    transparent 2px
-                );
+            background: linear-gradient(135deg, #000 0%, #200 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+            z-index: 100;
         }
         
+        #start-screen h1 {
+            color: #f00;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px #f00;
+            letter-spacing: 2px;
+        }
+        
+        #start-screen h2 {
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        #start-screen p {
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            max-width: 500px;
+        }
+        
+        #start-btn {
+            margin-top: 30px;
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            background: #300;
+            color: #f00;
+            border: 3px solid #600;
+            border-radius: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            min-height: 60px;
+            min-width: 200px;
+            transition: all 0.2s;
+        }
+        
+        #start-btn:active {
+            background: #500;
+            transform: scale(0.95);
+        }
+        
+        /* GENERATOR */
         #generator {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 85vw;
-            height: 25vh;
-            max-width: 320px;
-            max-height: 200px;
-            background-color: #222;
-            border: 3px solid #444;
-            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            height: 180px;
+            background: #222;
+            border: 4px solid #444;
+            border-radius: 15px;
             box-shadow: 
-                0 0 20px rgba(100, 0, 0, 0.7),
-                inset 0 0 20px rgba(0, 0, 0, 0.8);
+                0 0 30px rgba(255, 0, 0, 0.5),
+                inset 0 0 30px rgba(0, 0, 0, 0.8);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 2;
-        }
-        
-        @media (min-height: 700px) {
-            #generator {
-                height: 30vh;
-                max-height: 250px;
-            }
+            z-index: 10;
         }
         
         .generator-panel {
-            width: 90%;
-            height: 80%;
-            background-color: #111;
+            width: 95%;
+            height: 85%;
+            background: #111;
             border: 2px solid #333;
-            border-radius: 5px;
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -115,515 +133,322 @@
             gap: 15px;
         }
         
-        .generator-light {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: #300;
-            box-shadow: 0 0 5px #f00;
-            transition: background-color 0.5s;
-        }
-        
-        @media (min-height: 700px) {
-            .generator-light {
-                width: 25px;
-                height: 25px;
-            }
-        }
-        
-        .generator-light.active {
-            background-color: #f00;
-            box-shadow: 0 0 15px #f00;
-            animation: flicker 0.3s infinite alternate;
-        }
-        
         #math-problem {
-            font-size: 5vw;
-            text-align: center;
-            color: #f0f0f0;
-            text-shadow: 0 0 5px #f00;
+            font-size: 2rem;
+            color: #fff;
+            text-shadow: 0 0 10px #f00;
             font-weight: bold;
-            letter-spacing: 1px;
+            text-align: center;
             line-height: 1.3;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 95%;
-        }
-        
-        @media (min-width: 500px) {
-            #math-problem {
-                font-size: 24px;
-            }
+            max-width: 100%;
         }
         
         #instructions {
-            font-size: 3.5vw;
-            text-align: center;
+            font-size: 0.9rem;
             color: #aaa;
-            text-shadow: 0 0 3px #000;
+            text-align: center;
             line-height: 1.4;
-            max-width: 95%;
         }
         
-        @media (min-width: 500px) {
-            #instructions {
-                font-size: 16px;
-            }
-        }
-        
+        /* TOMBOL KONTROL */
         #controls {
             position: absolute;
-            bottom: 20px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
             gap: 20px;
-            z-index: 3;
-            width: 90%;
+            width: 95%;
+            max-width: 500px;
             justify-content: center;
-        }
-        
-        @media (min-height: 700px) {
-            #controls {
-                bottom: 40px;
-                gap: 30px;
-            }
+            z-index: 10;
         }
         
         .control-btn {
             flex: 1;
-            min-width: 120px;
-            max-width: 160px;
-            height: 60px;
-            background-color: #222;
-            border: 2px solid #444;
-            color: #e0e0e0;
-            font-size: 4.5vw;
+            min-width: 140px;
+            height: 70px;
+            background: #222;
+            border: 3px solid #444;
+            color: #fff;
+            font-size: 1.1rem;
             font-weight: bold;
-            border-radius: 10px;
+            border-radius: 15px;
             cursor: pointer;
-            transition: all 0.2s;
+            min-height: 70px;
+            transition: all 0.1s;
             text-shadow: 0 0 5px #f00;
-            letter-spacing: 1px;
-            touch-action: manipulation;
-        }
-        
-        @media (min-width: 500px) {
-            .control-btn {
-                font-size: 18px;
-                height: 50px;
-            }
         }
         
         .control-btn:active {
-            background-color: #333;
-            border-color: #666;
+            background: #333;
+            border-color: #f00;
             transform: scale(0.95);
         }
         
-        @media (hover: hover) {
-            .control-btn:hover {
-                background-color: #333;
-                border-color: #666;
-                transform: scale(1.05);
-            }
-        }
-        
+        /* PROGRESS BAR */
         #progress-container {
             position: absolute;
-            bottom: 90px;
+            bottom: 120px;
             left: 50%;
             transform: translateX(-50%);
             width: 80%;
-            max-width: 300px;
-            height: 15px;
-            background-color: #111;
+            max-width: 350px;
+            height: 20px;
+            background: #111;
             border: 2px solid #333;
             border-radius: 10px;
             overflow: hidden;
-            z-index: 3;
-        }
-        
-        @media (min-height: 700px) {
-            #progress-container {
-                bottom: 100px;
-                height: 20px;
-            }
+            z-index: 10;
         }
         
         #progress-bar {
             height: 100%;
             width: 0%;
-            background-color: #900;
-            transition: width 0.5s;
+            background: linear-gradient(90deg, #900 0%, #f00 100%);
+            transition: width 0.3s;
             box-shadow: 0 0 10px #f00;
         }
         
+        /* UI ELEMENTS */
         #timer {
             position: absolute;
-            top: 15px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 7vw;
+            font-size: 2.5rem;
             color: #f00;
-            text-shadow: 0 0 10px #f00;
+            text-shadow: 0 0 15px #f00;
             font-weight: bold;
-            z-index: 3;
-            letter-spacing: 2px;
-        }
-        
-        @media (min-width: 500px) {
-            #timer {
-                font-size: 28px;
-            }
+            z-index: 10;
         }
         
         #score {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            font-size: 5vw;
-            color: #f0f0f0;
-            z-index: 3;
+            top: 20px;
+            right: 20px;
+            font-size: 1.2rem;
+            color: #fff;
             text-shadow: 0 0 5px #f00;
-        }
-        
-        @media (min-width: 500px) {
-            #score {
-                font-size: 20px;
-            }
+            z-index: 10;
         }
         
         #heartbeat {
             position: absolute;
-            top: 15px;
-            left: 15px;
-            font-size: 6vw;
+            top: 20px;
+            left: 20px;
+            font-size: 1.5rem;
             color: #f00;
-            z-index: 3;
-            text-shadow: 0 0 5px #f00;
-            animation: heartbeat 1.5s infinite;
+            z-index: 10;
+            animation: heartbeat 1s infinite;
         }
         
-        @media (min-width: 500px) {
-            #heartbeat {
-                font-size: 24px;
-            }
-        }
-        
-        .danger-close {
-            animation: danger-pulse 0.8s infinite;
-        }
-        
+        /* ENTITY HORROR */
         #entity {
             position: absolute;
-            width: 60px;
-            height: 90px;
-            background-color: transparent;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 150"><path d="M50,10 C70,10 85,30 85,60 C85,80 75,95 60,110 L60,140 L40,140 L40,110 C25,95 15,80 15,60 C15,30 30,10 50,10 Z" fill="rgba(30,0,0,0.8)"/><circle cx="40" cy="50" r="5" fill="rgba(255,0,0,0.7)"/><circle cx="60" cy="50" r="5" fill="rgba(255,0,0,0.7)"/><path d="M50,80 Q55,90 50,100 Q45,90 50,80 Z" fill="rgba(100,0,0,0.9)"/></svg>');
+            width: 100px;
+            height: 150px;
+            background: transparent;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 150"><path d="M50,10 C70,10 85,30 85,60 C85,80 75,95 60,110 L60,140 L40,140 L40,110 C25,95 15,80 15,60 C15,30 30,10 50,10 Z" fill="rgba(20,0,0,0.9)"/><circle cx="40" cy="50" r="6" fill="rgba(255,0,0,0.8)"/><circle cx="60" cy="50" r="6" fill="rgba(255,0,0,0.8)"/><path d="M50,80 Q55,95 50,110 Q45,95 50,80 Z" fill="rgba(150,0,0,0.9)"/></svg>');
             background-repeat: no-repeat;
             background-size: contain;
-            filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.7));
-            z-index: 1;
+            filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.8));
+            z-index: 5;
             opacity: 0;
-            transition: opacity 0.5s;
-        }
-        
-        @media (min-width: 768px) {
-            #entity {
-                width: 80px;
-                height: 120px;
-            }
+            transition: opacity 0.3s;
         }
         
         .entity-visible {
-            opacity: 0.9 !important;
+            opacity: 1 !important;
         }
         
         .jumpscare {
             animation: jumpscare 0.5s forwards;
         }
         
-        #sound-toggle {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: rgba(0,0,0,0.5);
-            color: #aaa;
-            border: 1px solid #444;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 100;
-            font-size: 3.5vw;
-        }
-        
-        @media (min-width: 500px) {
-            #sound-toggle {
-                font-size: 14px;
-                padding: 5px 10px;
-            }
-        }
-        
-        #fullscreen-btn {
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            background: rgba(0,0,0,0.5);
-            color: #aaa;
-            border: 1px solid #444;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 100;
-            font-size: 3.5vw;
-        }
-        
-        @media (min-width: 500px) {
-            #fullscreen-btn {
-                font-size: 14px;
-                padding: 5px 10px;
-            }
-        }
-        
-        @keyframes flicker {
-            0% { opacity: 1; }
-            50% { opacity: 0.7; }
-            100% { opacity: 1; }
-        }
-        
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        
-        @keyframes danger-pulse {
-            0% { box-shadow: 0 0 20px rgba(100, 0, 0, 0.7); }
-            50% { box-shadow: 0 0 40px rgba(255, 0, 0, 0.9); }
-            100% { box-shadow: 0 0 20px rgba(100, 0, 0, 0.7); }
-        }
-        
-        @keyframes jumpscare {
-            0% { transform: scale(1); filter: brightness(1); }
-            50% { transform: scale(1.3); filter: brightness(1.5); }
-            100% { transform: scale(1); filter: brightness(1); }
-        }
-        
-        #start-screen, #win-screen, #game-over-screen {
+        /* LAYAR HASIL */
+        #win-screen, #game-over-screen {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.95);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 100;
-            text-align: center;
             padding: 20px;
-            overflow-y: auto;
+            text-align: center;
+            z-index: 100;
         }
         
         #win-screen {
-            background-color: rgba(0, 20, 0, 0.97);
+            background: rgba(0, 30, 0, 0.95);
         }
         
-        .hidden {
-            display: none !important;
-        }
-        
-        h1 {
-            color: #f00;
-            font-size: 8vw;
-            margin-bottom: 15px;
-            text-shadow: 0 0 10px #f00;
-            letter-spacing: 1px;
-        }
-        
-        @media (min-width: 500px) {
-            h1 {
-                font-size: 40px;
-            }
+        #game-over-screen {
+            background: rgba(30, 0, 0, 0.95);
         }
         
         #win-text {
             color: #0f0;
-            text-shadow: 0 0 15px #0f0;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #0f0;
         }
         
         #game-over-text {
             color: #f00;
-            font-size: 8vw;
-            margin-bottom: 15px;
-            text-shadow: 0 0 15px #f00;
-        }
-        
-        @media (min-width: 500px) {
-            #game-over-text {
-                font-size: 40px;
-            }
-        }
-        
-        h2 {
-            color: #e0e0e0;
-            font-size: 5vw;
+            font-size: 2.5rem;
             margin-bottom: 20px;
+            text-shadow: 0 0 20px #f00;
         }
         
-        @media (min-width: 500px) {
-            h2 {
-                font-size: 24px;
-            }
-        }
-        
-        p {
-            color: #aaa;
-            font-size: 3.8vw;
-            max-width: 90%;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-        
-        @media (min-width: 500px) {
-            p {
-                font-size: 16px;
-            }
+        #final-score, #final-score-win {
+            font-size: 1.8rem;
+            margin: 15px 0;
+            color: #fff;
         }
         
         #congrats-message {
             color: #afa;
-            font-size: 4.2vw;
+            font-size: 1.1rem;
             max-width: 90%;
             line-height: 1.5;
             margin: 15px 0;
-        }
-        
-        @media (min-width: 500px) {
-            #congrats-message {
-                font-size: 18px;
-            }
         }
         
         #final-message {
             color: #faa;
-            font-size: 4vw;
+            font-size: 1.1rem;
             max-width: 90%;
             line-height: 1.5;
             margin: 15px 0;
         }
         
-        @media (min-width: 500px) {
-            #final-message {
-                font-size: 17px;
-            }
-        }
-        
-        #final-score, #final-score-win {
-            color: #fff;
-            font-size: 6vw;
-            margin: 15px 0;
-            text-shadow: 0 0 10px #f00;
-        }
-        
-        @media (min-width: 500px) {
-            #final-score, #final-score-win {
-                font-size: 24px;
-            }
-        }
-        
-        #final-score-win {
-            color: #0f0;
-            text-shadow: 0 0 10px #0f0;
-        }
-        
         #stats {
-            background-color: rgba(0, 30, 0, 0.7);
+            background: rgba(0, 50, 0, 0.7);
             border: 2px solid #0a0;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 15px 0;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
             max-width: 90%;
-            width: 300px;
+            width: 320px;
         }
         
         .stat-item {
             color: #cfc;
-            font-size: 3.8vw;
-            margin: 8px 0;
+            font-size: 1rem;
+            margin: 10px 0;
             display: flex;
             justify-content: space-between;
         }
         
-        @media (min-width: 500px) {
-            .stat-item {
-                font-size: 16px;
-            }
-        }
-        
-        #start-btn, #restart-btn, #win-btn {
+        #win-btn, #restart-btn {
             margin-top: 20px;
-            padding: 12px 30px;
-            font-size: 4.5vw;
-            background-color: #300;
-            color: #f00;
-            border: 2px solid #600;
-            border-radius: 8px;
-            cursor: pointer;
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            border-radius: 15px;
             font-weight: bold;
-            letter-spacing: 1px;
-            transition: all 0.3s;
-            touch-action: manipulation;
-            min-width: 180px;
-        }
-        
-        @media (min-width: 500px) {
-            #start-btn, #restart-btn, #win-btn {
-                font-size: 18px;
-                padding: 15px 40px;
-            }
+            cursor: pointer;
+            min-height: 60px;
+            min-width: 200px;
+            transition: all 0.2s;
         }
         
         #win-btn {
-            background-color: #030;
+            background: #030;
             color: #0f0;
-            border: 2px solid #0a0;
+            border: 3px solid #0a0;
         }
         
-        #start-btn:active, #restart-btn:active, #win-btn:active {
+        #restart-btn {
+            background: #300;
+            color: #f00;
+            border: 3px solid #600;
+        }
+        
+        #win-btn:active, #restart-btn:active {
             transform: scale(0.95);
         }
         
-        @media (hover: hover) {
-            #start-btn:hover, #restart-btn:hover {
-                background-color: #500;
-                border-color: #900;
-                transform: scale(1.05);
-            }
-            
-            #win-btn:hover {
-                background-color: #050;
-                border-color: #0f0;
-                transform: scale(1.05);
-                box-shadow: 0 0 15px #0f0;
-            }
-        }
-        
-        .fireworks {
+        /* TOGGLE BUTTONS */
+        #sound-toggle, #fullscreen-btn {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 99;
+            top: 15px;
+            background: rgba(0,0,0,0.7);
+            color: #aaa;
+            border: 2px solid #444;
+            padding: 12px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 1.2rem;
+            min-height: 50px;
+            min-width: 50px;
         }
         
+        #sound-toggle {
+            right: 15px;
+        }
+        
+        #fullscreen-btn {
+            left: 15px;
+        }
+        
+        /* ANIMATIONS */
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes jumpscare {
+            0% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.5); filter: brightness(2); }
+            100% { transform: scale(1); filter: brightness(1); }
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        @keyframes danger {
+            0%, 100% { box-shadow: 0 0 30px rgba(255, 0, 0, 0.5); }
+            50% { box-shadow: 0 0 50px rgba(255, 0, 0, 0.9); }
+        }
+        
+        .danger-close {
+            animation: danger 0.8s infinite;
+        }
+        
+        .blink {
+            animation: flicker 0.5s infinite;
+        }
+        
+        .flash {
+            animation: flash 0.2s;
+        }
+        
+        @keyframes flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* HIDDEN CLASS */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* FIREWORKS EFFECT */
         .firework {
             position: absolute;
-            width: 4px;
-            height: 4px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             animation: firework 1.5s forwards;
         }
@@ -639,249 +464,174 @@
             100% {
                 transform: translateY(0) scale(1);
                 opacity: 0;
-                background-color: #0f0;
             }
         }
         
-        .blink {
-            animation: blink 1s infinite;
+        /* SCAN LINES EFFECT */
+        #scanlines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                transparent 50%,
+                rgba(0, 0, 0, 0.2) 50%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.3;
         }
         
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-        
-        .flash {
-            animation: flash 0.2s;
-        }
-        
-        @keyframes flash {
-            0% { filter: brightness(1); }
-            50% { filter: brightness(1.8); }
-            100% { filter: brightness(1); }
-        }
-        
-        @media (orientation: landscape) and (max-height: 500px) {
-            #generator {
-                width: 60vw;
-                height: 70vh;
-                max-width: 400px;
-                max-height: 300px;
-            }
-            
-            #controls {
-                bottom: 10px;
-            }
-            
-            #progress-container {
-                bottom: 70px;
-            }
-            
-            #timer, #score, #heartbeat {
-                top: 5px;
-                font-size: 16px;
-            }
-            
-            #math-problem {
-                font-size: 18px;
-            }
-            
-            #instructions {
-                font-size: 12px;
-            }
-        }
-        
-        @media (max-height: 600px) {
-            .generator-panel {
-                gap: 10px;
-                padding: 10px;
-            }
-            
-            #math-problem {
-                font-size: 18px;
-            }
-            
-            #instructions {
-                font-size: 12px;
-            }
-            
-            .control-btn {
-                height: 50px;
-                font-size: 16px;
-            }
+        /* VIGNETTE EFFECT */
+        #vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                ellipse at center,
+                transparent 40%,
+                rgba(0, 0, 0, 0.8) 100%
+            );
+            pointer-events: none;
+            z-index: 1;
         }
     </style>
 </head>
 <body>
     <div id="game-container">
-        <div id="game-screen">
-            <!-- Layar awal -->
-            <div id="start-screen">
-                <h1>GENERATOR'S NIGHTMARE</h1>
-                <h2>Perbaiki Generator Sebelum Terlambat</h2>
-                <p>Anda terperangkap di area yang gelap dengan entitas mengerikan yang mendekat. Satu-satunya cara untuk bertahan hidup adalah memperbaiki generator dengan menjawab soal matematika.</p>
-                <p><strong>Cara Bermain:</strong><br>
-                1. Anda akan diberikan dua operasi perkalian<br>
-                2. Tentukan mana yang lebih besar atau lebih kecil<br>
-                3. Tekan tombol "LEBIH BESAR" atau "LEBIH KECIL"<br>
-                4. Jawab dengan cepat sebelum waktu habis!</p>
-                <p>Hati-hati! Entitas akan semakin mendekat seiring waktu. Jika terlalu dekat, Anda akan ketakutan dan kesulitan berkonsentrasi!</p>
-                <button id="start-btn">MULAI PERBAIKAN</button>
-            </div>
-            
-            <!-- Layar kemenangan -->
-            <div id="win-screen" class="hidden">
-                <h1 id="win-text">GENERATOR DIPERBAIKI!</h1>
-                <p id="final-score-win">Skor Akhir: 0</p>
-                <p id="congrats-message">Selamat! Anda berhasil memperbaiki generator dan melarikan diri dari entitas mengerikan!</p>
-                
-                <div id="stats">
-                    <div class="stat-item">
-                        <span>Soal Dijawab:</span>
-                        <span id="stat-questions">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <span>Akurasi:</span>
-                        <span id="stat-accuracy">0%</span>
-                    </div>
-                    <div class="stat-item">
-                        <span>Waktu Tersisa:</span>
-                        <span id="stat-time">0 detik</span>
-                    </div>
-                    <div class="stat-item">
-                        <span>Entitas Terdekat:</span>
-                        <span id="stat-entity">0%</span>
-                    </div>
+        <!-- SCAN LINES & VIGNETTE -->
+        <div id="scanlines"></div>
+        <div id="vignette"></div>
+        
+        <!-- START SCREEN -->
+        <div id="start-screen">
+            <h1>🔧 GENERATOR HORROR</h1>
+            <h2>Perbaiki Generator - Lari dari Entitas!</h2>
+            <p><strong>🎮 CARA MAIN:</strong><br>
+            • Jawab soal matematika dengan cepat<br>
+            • Pilih LEBIH BESAR atau LEBIH KECIL<br>
+            • Perbaiki generator sebelum entitas menangkapmu!</p>
+            <p><strong>⚠️ PERINGATAN:</strong><br>
+            • Entitas akan semakin dekat<br>
+            • Waktu terbatas<br>
+            • Salah jawab = entitas lebih dekat!</p>
+            <button id="start-btn">🚀 MULAI GAME</button>
+        </div>
+        
+        <!-- WIN SCREEN -->
+        <div id="win-screen" class="hidden">
+            <h1 id="win-text">🎉 GENERATOR SELESAI!</h1>
+            <p id="final-score-win">Skor: 0</p>
+            <p id="congrats-message">Kamu berhasil melarikan diri!</p>
+            <div id="stats">
+                <div class="stat-item">
+                    <span>Soal:</span>
+                    <span id="stat-questions">0</span>
                 </div>
-                
-                <button id="win-btn">MAIN LAGI</button>
-            </div>
-            
-            <!-- Layar game over -->
-            <div id="game-over-screen" class="hidden">
-                <h1 id="game-over-text">GAME OVER</h1>
-                <p id="final-score">Skor: 0</p>
-                <p id="final-message">Generator gagal diperbaiki. Entitas telah menemukan Anda...</p>
-                <button id="restart-btn">COBA LAGI</button>
-            </div>
-            
-            <!-- Game utama -->
-            <div id="game-overlay"></div>
-            <button id="fullscreen-btn">📱</button>
-            <div id="heartbeat">❤️</div>
-            <div id="timer">60</div>
-            <div id="score">Skor: 0</div>
-            
-            <div id="entity"></div>
-            
-            <div id="generator">
-                <div class="generator-light" id="generator-light"></div>
-                <div class="generator-panel">
-                    <div id="math-problem">12 × 6 ______ 8 × 9</div>
-                    <div id="instructions">Pilih mana yang lebih besar atau lebih kecil</div>
+                <div class="stat-item">
+                    <span>Akurasi:</span>
+                    <span id="stat-accuracy">0%</span>
+                </div>
+                <div class="stat-item">
+                    <span>Waktu:</span>
+                    <span id="stat-time">0s</span>
                 </div>
             </div>
-            
-            <div id="progress-container">
-                <div id="progress-bar"></div>
-            </div>
-            
-            <div id="controls">
-                <button class="control-btn" id="greater-btn">LEBIH BESAR</button>
-                <button class="control-btn" id="lesser-btn">LEBIH KECIL</button>
+            <button id="win-btn">🔄 MAIN LAGI</button>
+        </div>
+        
+        <!-- GAME OVER SCREEN -->
+        <div id="game-over-screen" class="hidden">
+            <h1 id="game-over-text">💀 GAME OVER</h1>
+            <p id="final-score">Skor: 0</p>
+            <p id="final-message">Entitas menangkapmu...</p>
+            <button id="restart-btn">🔄 COBA LAGI</button>
+        </div>
+        
+        <!-- GAME UI -->
+        <button id="fullscreen-btn">📱</button>
+        <button id="sound-toggle">🔊</button>
+        
+        <div id="heartbeat">❤️</div>
+        <div id="timer">60</div>
+        <div id="score">Skor: 0</div>
+        
+        <!-- ENTITY -->
+        <div id="entity"></div>
+        
+        <!-- GENERATOR -->
+        <div id="generator">
+            <div class="generator-panel">
+                <div id="math-problem">12 × 6 ______ 8 × 9</div>
+                <div id="instructions">Pilih mana yang lebih besar atau lebih kecil</div>
             </div>
         </div>
         
-        <button id="sound-toggle">🔊</button>
+        <!-- PROGRESS -->
+        <div id="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        
+        <!-- CONTROLS -->
+        <div id="controls">
+            <button class="control-btn" id="greater-btn">📈 LEBIH BESAR</button>
+            <button class="control-btn" id="lesser-btn">📉 LEBIH KECIL</button>
+        </div>
     </div>
 
     <script>
-        // Fullscreen functionality
-        const fullscreenBtn = document.getElementById('fullscreen-btn');
-        const gameContainer = document.getElementById('game-container');
+        // ==================== INITIALIZATION ====================
+        const isAndroid = /Android/i.test(navigator.userAgent);
         
-        fullscreenBtn.addEventListener('click', toggleFullscreen);
-        
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                if (gameContainer.requestFullscreen) {
-                    gameContainer.requestFullscreen();
-                } else if (gameContainer.webkitRequestFullscreen) {
-                    gameContainer.webkitRequestFullscreen();
-                } else if (gameContainer.msRequestFullscreen) {
-                    gameContainer.msRequestFullscreen();
-                }
-                fullscreenBtn.textContent = '📱';
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                }
-                fullscreenBtn.textContent = '📱';
-            }
-        }
-        
-        // Detect device type
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        
-        // Adjust for mobile
-        if (isMobile) {
-            document.querySelectorAll('button').forEach(btn => {
-                btn.style.minHeight = '44px';
-            });
-        }
-        
-        // Elemen DOM
-        const startScreen = document.getElementById('start-screen');
-        const winScreen = document.getElementById('win-screen');
-        const gameOverScreen = document.getElementById('game-over-screen');
-        const gameScreen = document.getElementById('game-screen');
-        const startBtn = document.getElementById('start-btn');
-        const winBtn = document.getElementById('win-btn');
-        const restartBtn = document.getElementById('restart-btn');
-        const timerElement = document.getElementById('timer');
-        const scoreElement = document.getElementById('score');
-        const mathProblemElement = document.getElementById('math-problem');
-        const progressBar = document.getElementById('progress-bar');
-        const generatorLight = document.getElementById('generator-light');
-        const greaterBtn = document.getElementById('greater-btn');
-        const lesserBtn = document.getElementById('lesser-btn');
-        const entity = document.getElementById('entity');
-        const soundToggle = document.getElementById('sound-toggle');
-        const finalScoreElement = document.getElementById('final-score');
-        const finalScoreWinElement = document.getElementById('final-score-win');
-        const congratsMessageElement = document.getElementById('congrats-message');
-        const finalMessageElement = document.getElementById('final-message');
-        const statQuestionsElement = document.getElementById('stat-questions');
-        const statAccuracyElement = document.getElementById('stat-accuracy');
-        const statTimeElement = document.getElementById('stat-time');
-        const statEntityElement = document.getElementById('stat-entity');
-        
-        // Variabel game
-        let score = 0;
-        let timeLeft = 60;
-        let progress = 0;
-        let gameActive = false;
-        let timerInterval;
-        let entityDistance = 100;
-        let entitySpeed = 2;
-        let soundEnabled = true;
-        let problemsSolved = 0;
-        let totalQuestions = 0;
-        let correctAnswers = 0;
-        
-        // Soal matematika
-        let currentProblem = {
-            left: { num1: 0, num2: 0, result: 0 },
-            right: { num1: 0, num2: 0, result: 0 },
-            correctAnswer: ''
+        // DOM Elements
+        const elements = {
+            startScreen: document.getElementById('start-screen'),
+            winScreen: document.getElementById('win-screen'),
+            gameOverScreen: document.getElementById('game-over-screen'),
+            startBtn: document.getElementById('start-btn'),
+            winBtn: document.getElementById('win-btn'),
+            restartBtn: document.getElementById('restart-btn'),
+            timer: document.getElementById('timer'),
+            score: document.getElementById('score'),
+            mathProblem: document.getElementById('math-problem'),
+            progressBar: document.getElementById('progress-bar'),
+            greaterBtn: document.getElementById('greater-btn'),
+            lesserBtn: document.getElementById('lesser-btn'),
+            entity: document.getElementById('entity'),
+            soundToggle: document.getElementById('sound-toggle'),
+            fullscreenBtn: document.getElementById('fullscreen-btn'),
+            finalScore: document.getElementById('final-score'),
+            finalScoreWin: document.getElementById('final-score-win'),
+            congratsMessage: document.getElementById('congrats-message'),
+            finalMessage: document.getElementById('final-message'),
+            statQuestions: document.getElementById('stat-questions'),
+            statAccuracy: document.getElementById('stat-accuracy'),
+            statTime: document.getElementById('stat-time'),
+            heartbeat: document.getElementById('heartbeat')
         };
         
-        // Efek suara
+        // Game State
+        let gameState = {
+            score: 0,
+            timeLeft: 60,
+            progress: 0,
+            active: false,
+            entityDistance: 100,
+            entitySpeed: 2,
+            soundEnabled: true,
+            problemsSolved: 0,
+            totalQuestions: 0,
+            correctAnswers: 0,
+            currentProblem: null,
+            timerInterval: null
+        };
+        
+        // ==================== AUDIO SYSTEM ====================
         let audioContext;
         
         function initAudio() {
@@ -890,358 +640,379 @@
             }
         }
         
-        function playSound(frequency, duration, type = 'sine', volume = 0.3) {
-            if (!soundEnabled) return;
+        function playSound(freq, dur, type = 'sine', vol = 0.3) {
+            if (!gameState.soundEnabled) return;
             
             try {
                 initAudio();
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
+                
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
-                oscillator.frequency.value = frequency;
+                
+                oscillator.frequency.value = freq;
                 oscillator.type = type;
-                gainNode.gain.value = volume;
+                gainNode.gain.value = vol;
+                
                 oscillator.start();
-                oscillator.stop(audioContext.currentTime + duration);
-            } catch (e) {
-                console.log("Error playing sound:", e);
+                oscillator.stop(audioContext.currentTime + dur);
+            } catch(e) {
+                console.log("Audio error:", e);
             }
         }
         
-        // Fungsi efek kembang api
-        function createFireworks() {
-            const colors = ['#0f0', '#0ff', '#ff0', '#f0f'];
-            const messages = [
-                "Generator berhasil diperbaiki!",
-                "Anda berhasil melarikan diri!",
-                "Entitas berhasil dikalahkan!",
-                "Keselamatan tercapai!"
+        // ==================== GAME FUNCTIONS ====================
+        function generateProblem() {
+            // Generate random numbers 2-12
+            const nums = [
+                Math.floor(Math.random() * 11) + 2,
+                Math.floor(Math.random() * 11) + 2,
+                Math.floor(Math.random() * 11) + 2,
+                Math.floor(Math.random() * 11) + 2
             ];
             
-            congratsMessageElement.textContent = messages[Math.floor(Math.random() * messages.length)];
+            const leftResult = nums[0] * nums[1];
+            const rightResult = nums[2] * nums[3];
             
-            for (let i = 0; i < 30; i++) {
-                setTimeout(() => {
-                    const firework = document.createElement('div');
-                    firework.className = 'firework';
-                    firework.style.left = `${Math.random() * 100}%`;
-                    firework.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                    firework.style.animationDelay = `${Math.random() * 0.5}s`;
-                    document.getElementById('game-screen').appendChild(firework);
-                    setTimeout(() => {
-                        if (firework.parentNode) {
-                            firework.parentNode.removeChild(firework);
-                        }
-                    }, 1500);
-                }, i * 50);
-            }
-        }
-        
-        // FUNGSI GENERATE SOAL YANG UDAH DIPERBAIKI
-        function generateMathProblem() {
-            // Generate 4 angka random 2-13
-            const leftNum1 = Math.floor(Math.random() * 12) + 2;
-            const leftNum2 = Math.floor(Math.random() * 12) + 2;
-            const rightNum1 = Math.floor(Math.random() * 12) + 2;
-            const rightNum2 = Math.floor(Math.random() * 12) + 2;
-            
-            const leftResult = leftNum1 * leftNum2;
-            const rightResult = rightNum1 * rightNum2;
-            
-            // Pastikan hasilnya tidak sama
+            // Ensure different results
             if (leftResult === rightResult) {
-                // Regenerate jika sama
-                return generateMathProblem();
+                nums[3] = (nums[3] % 11) + 2;
+                return generateProblem();
             }
             
-            currentProblem = {
-                left: { num1: leftNum1, num2: leftNum2, result: leftResult },
-                right: { num1: rightNum1, num2: rightNum2, result: rightResult },
+            gameState.currentProblem = {
+                left: { num1: nums[0], num2: nums[1], result: leftResult },
+                right: { num1: nums[2], num2: nums[3], result: rightResult },
                 correctAnswer: leftResult > rightResult ? 'greater' : 'lesser'
             };
             
-            // TAMPILKAN DUA OPERASI - INI YANG DIPERBAIKI
-            mathProblemElement.textContent = `${leftNum1} × ${leftNum2} ______ ${rightNum1} × ${rightNum2}`;
+            // Display problem (FIXED: Shows TWO operations)
+            elements.mathProblem.textContent = 
+                `${nums[0]} × ${nums[1]} ______ ${nums[2]} × ${nums[3]}`;
             
-            // Efek visual
-            mathProblemElement.classList.remove('flash');
-            void mathProblemElement.offsetWidth;
-            mathProblemElement.classList.add('flash');
+            elements.mathProblem.classList.remove('flash');
+            void elements.mathProblem.offsetWidth;
+            elements.mathProblem.classList.add('flash');
             
-            totalQuestions++;
+            gameState.totalQuestions++;
             
             // Sound effect
-            playSound(300, 0.1, 'sine', 0.1);
             playSound(400, 0.1, 'sine', 0.1);
+            playSound(500, 0.1, 'sine', 0.1);
         }
         
-        // Fungsi untuk memeriksa jawaban
         function checkAnswer(answer) {
-            if (!gameActive) return;
+            if (!gameState.active) return;
             
-            playSound(200, 0.1, 'square', 0.2);
+            playSound(300, 0.1, 'square', 0.2);
             
-            if (answer === currentProblem.correctAnswer) {
-                // Jawaban benar
-                score += 10;
-                progress += 10;
-                problemsSolved++;
-                correctAnswers++;
+            const correct = answer === gameState.currentProblem.correctAnswer;
+            
+            if (correct) {
+                // Correct answer
+                gameState.score += 10;
+                gameState.progress += 10;
+                gameState.problemsSolved++;
+                gameState.correctAnswers++;
                 
-                progressBar.style.width = `${progress}%`;
-                scoreElement.textContent = `Skor: ${score}`;
+                elements.progressBar.style.width = `${gameState.progress}%`;
+                elements.score.textContent = `Skor: ${gameState.score}`;
                 
-                playSound(600, 0.2, 'sine', 0.3);
+                playSound(800, 0.2, 'sine', 0.3);
                 
-                if (progress >= 100) {
+                // Win condition
+                if (gameState.progress >= 100) {
                     winGame();
                     return;
                 }
                 
-                generateMathProblem();
-                
-                if (problemsSolved % 5 === 0) {
-                    entitySpeed += 0.5;
-                    timeLeft = Math.min(timeLeft + 5, 60);
+                // Every 5 correct answers increase difficulty
+                if (gameState.problemsSolved % 5 === 0) {
+                    gameState.entitySpeed += 0.5;
+                    gameState.timeLeft = Math.min(gameState.timeLeft + 5, 60);
                 }
+                
+                generateProblem();
             } else {
-                // Jawaban salah
-                progress = Math.max(0, progress - 15);
-                progressBar.style.width = `${progress}%`;
+                // Wrong answer
+                gameState.progress = Math.max(0, gameState.progress - 15);
+                elements.progressBar.style.width = `${gameState.progress}%`;
                 
                 playSound(150, 0.3, 'sawtooth', 0.4);
-                entityDistance = Math.max(0, entityDistance - 15);
+                gameState.entityDistance = Math.max(0, gameState.entityDistance - 20);
             }
             
-            updateEntityPosition();
+            updateEntity();
         }
         
-        // Fungsi untuk memperbarui posisi entitas
-        function updateEntityPosition() {
-            entityDistance = Math.max(0, entityDistance - entitySpeed);
+        function updateEntity() {
+            gameState.entityDistance = Math.max(0, gameState.entityDistance - gameState.entitySpeed);
             
-            const maxDistance = 100;
-            const distancePercent = entityDistance / maxDistance;
+            const distancePercent = gameState.entityDistance / 100;
             
+            // Position entity
             const leftPos = 50 + (50 * distancePercent);
             const topPos = 30 + (40 * distancePercent);
-            const size = isMobile ? 50 : 80;
-            const entitySize = size + (30 * (1 - distancePercent));
+            const size = 80 + (40 * (1 - distancePercent));
             
-            entity.style.left = `${leftPos}%`;
-            entity.style.top = `${topPos}%`;
-            entity.style.width = `${entitySize}px`;
-            entity.style.height = `${entitySize * 1.5}px`;
+            elements.entity.style.left = `${leftPos}%`;
+            elements.entity.style.top = `${topPos}%`;
+            elements.entity.style.width = `${size}px`;
+            elements.entity.style.height = `${size * 1.5}px`;
             
-            if (entityDistance < 30) {
-                entity.classList.add('entity-visible');
+            // Show/hide based on distance
+            if (gameState.entityDistance < 30) {
+                elements.entity.classList.add('entity-visible');
                 
-                if (entityDistance < 10) {
-                    gameScreen.classList.add('danger-close');
+                if (gameState.entityDistance < 10) {
+                    document.getElementById('game-container').classList.add('danger-close');
+                    elements.heartbeat.classList.add('blink');
+                    playSound(80, 0.1, 'sine', 0.2);
                 } else {
-                    gameScreen.classList.remove('danger-close');
+                    document.getElementById('game-container').classList.remove('danger-close');
+                    elements.heartbeat.classList.remove('blink');
                 }
             } else {
-                entity.classList.remove('entity-visible');
-                gameScreen.classList.remove('danger-close');
+                elements.entity.classList.remove('entity-visible');
+                document.getElementById('game-container').classList.remove('danger-close');
+                elements.heartbeat.classList.remove('blink');
             }
             
-            if (entityDistance <= 0) {
+            // Game over if entity catches you
+            if (gameState.entityDistance <= 0) {
                 gameOver();
             }
         }
         
-        // Fungsi untuk memulai game
+        function updateTimer() {
+            if (!gameState.active) return;
+            
+            gameState.timeLeft--;
+            elements.timer.textContent = gameState.timeLeft;
+            
+            // Blink when time is low
+            if (gameState.timeLeft <= 10) {
+                elements.timer.classList.add('blink');
+                playSound(200, 0.1, 'sine', 0.2);
+            } else {
+                elements.timer.classList.remove('blink');
+            }
+            
+            // Time's up
+            if (gameState.timeLeft <= 0) {
+                gameOver();
+            }
+        }
+        
         function startGame() {
-            startScreen.classList.add('hidden');
-            winScreen.classList.add('hidden');
-            gameOverScreen.classList.add('hidden');
-            gameActive = true;
+            // Hide screens
+            elements.startScreen.classList.add('hidden');
+            elements.winScreen.classList.add('hidden');
+            elements.gameOverScreen.classList.add('hidden');
             
-            // Reset semua variabel
-            score = 0;
-            timeLeft = 60;
-            progress = 0;
-            entityDistance = 100;
-            entitySpeed = 2;
-            problemsSolved = 0;
-            totalQuestions = 0;
-            correctAnswers = 0;
+            // Reset state
+            gameState = {
+                score: 0,
+                timeLeft: 60,
+                progress: 0,
+                active: true,
+                entityDistance: 100,
+                entitySpeed: 2,
+                soundEnabled: true,
+                problemsSolved: 0,
+                totalQuestions: 0,
+                correctAnswers: 0,
+                currentProblem: null,
+                timerInterval: null
+            };
             
-            scoreElement.textContent = `Skor: ${score}`;
-            timerElement.textContent = timeLeft;
-            progressBar.style.width = '0%';
+            // Update UI
+            elements.score.textContent = `Skor: 0`;
+            elements.timer.textContent = '60';
+            elements.progressBar.style.width = '0%';
+            elements.soundToggle.textContent = '🔊';
             
-            // Generate soal pertama
-            generateMathProblem();
+            // Start game
+            generateProblem();
             
-            // Mulai timer
-            clearInterval(timerInterval);
-            timerInterval = setInterval(updateTimer, 1000);
+            clearInterval(gameState.timerInterval);
+            gameState.timerInterval = setInterval(updateTimer, 1000);
             
-            // Mulai pergerakan entitas
+            // Game loop
             const gameLoop = setInterval(() => {
-                if (!gameActive) {
+                if (!gameState.active) {
                     clearInterval(gameLoop);
                     return;
                 }
-                updateEntityPosition();
+                updateEntity();
             }, 1000);
             
-            playSound(80, 0.5, 'sine', 0.05);
+            playSound(100, 0.5, 'sine', 0.1);
         }
         
-        // Fungsi untuk mengupdate timer
-        function updateTimer() {
-            if (!gameActive) return;
-            
-            timeLeft--;
-            timerElement.textContent = timeLeft;
-            
-            if (timeLeft <= 10) {
-                timerElement.classList.add('blink');
-                playSound(100, 0.1, 'sine', 0.2);
-            } else {
-                timerElement.classList.remove('blink');
-            }
-            
-            if (timeLeft <= 0) {
-                gameOver();
-            }
-        }
-        
-        // Fungsi ketika menang
         function winGame() {
-            gameActive = false;
-            clearInterval(timerInterval);
+            gameState.active = false;
+            clearInterval(gameState.timerInterval);
             
-            generatorLight.classList.add('active');
+            // Victory sounds
             playSound(800, 0.5, 'sine', 0.5);
             playSound(1000, 0.5, 'sine', 0.5);
             playSound(1200, 0.5, 'sine', 0.5);
             
-            // Update statistik
-            finalScoreWinElement.textContent = `Skor Akhir: ${score}`;
-            statQuestionsElement.textContent = problemsSolved;
-            statAccuracyElement.textContent = totalQuestions > 0 ? 
-                Math.round((correctAnswers / totalQuestions) * 100) + '%' : '0%';
-            statTimeElement.textContent = `${timeLeft} detik`;
-            statEntityElement.textContent = `${Math.round((100 - entityDistance))}%`;
+            // Update stats
+            elements.finalScoreWin.textContent = `Skor: ${gameState.score}`;
+            elements.statQuestions.textContent = gameState.problemsSolved;
+            elements.statAccuracy.textContent = gameState.totalQuestions > 0 ? 
+                Math.round((gameState.correctAnswers / gameState.totalQuestions) * 100) + '%' : '0%';
+            elements.statTime.textContent = `${gameState.timeLeft}s`;
             
-            // Buat efek kembang api
-            createFireworks();
-            
-            // Tampilkan layar kemenangan
+            // Show win screen
             setTimeout(() => {
-                winScreen.classList.remove('hidden');
+                elements.winScreen.classList.remove('hidden');
             }, 1500);
         }
         
-        // Fungsi ketika game over
         function gameOver() {
-            gameActive = false;
-            clearInterval(timerInterval);
+            gameState.active = false;
+            clearInterval(gameState.timerInterval);
             
-            entity.classList.add('jumpscare');
+            // Jumpscare
+            elements.entity.classList.add('jumpscare');
             playSound(50, 0.8, 'sawtooth', 0.7);
             
-            // Update teks game over
-            finalScoreElement.textContent = `Skor: ${score}`;
+            // Update score
+            elements.finalScore.textContent = `Skor: ${gameState.score}`;
             
-            const gameOverMessages = [
-                "Generator gagal diperbaiki. Entitas telah menemukan Anda...",
-                "Terlalu lambat! Entitas sudah di depan mata...",
-                "Konsentrasi hilang. Entitas mendekat dan...",
-                "Waktu habis. Generator meledak dan menarik perhatian entitas."
+            // Random game over messages
+            const messages = [
+                "Entitas menangkapmu...",
+                "Terlalu lambat!",
+                "Generator meledak!",
+                "Kamu terjebak!"
             ];
-            finalMessageElement.textContent = gameOverMessages[Math.floor(Math.random() * gameOverMessages.length)];
+            elements.finalMessage.textContent = messages[Math.floor(Math.random() * messages.length)];
             
+            // Show game over screen
             setTimeout(() => {
-                gameOverScreen.classList.remove('hidden');
+                elements.gameOverScreen.classList.remove('hidden');
             }, 1500);
         }
         
-        // Event listeners
-        startBtn.addEventListener('click', startGame);
-        winBtn.addEventListener('click', startGame);
-        restartBtn.addEventListener('click', startGame);
+        // ==================== EVENT LISTENERS ====================
+        // Button events
+        elements.startBtn.addEventListener('click', startGame);
+        elements.winBtn.addEventListener('click', startGame);
+        elements.restartBtn.addEventListener('click', startGame);
         
-        greaterBtn.addEventListener('click', () => {
-            checkAnswer('greater');
-        });
+        elements.greaterBtn.addEventListener('click', () => checkAnswer('greater'));
+        elements.lesserBtn.addEventListener('click', () => checkAnswer('lesser'));
         
-        lesserBtn.addEventListener('click', () => {
-            checkAnswer('lesser');
-        });
-        
-        // Touch events untuk mobile
-        greaterBtn.addEventListener('touchstart', (e) => {
+        // Touch feedback for mobile
+        elements.greaterBtn.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            greaterBtn.classList.add('flash');
+            elements.greaterBtn.classList.add('flash');
         });
         
-        lesserBtn.addEventListener('touchstart', (e) => {
+        elements.lesserBtn.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            lesserBtn.classList.add('flash');
+            elements.lesserBtn.classList.add('flash');
         });
         
-        // Kontrol keyboard untuk desktop
+        // Sound toggle
+        elements.soundToggle.addEventListener('click', () => {
+            gameState.soundEnabled = !gameState.soundEnabled;
+            elements.soundToggle.textContent = gameState.soundEnabled ? '🔊' : '🔇';
+            
+            if (gameState.soundEnabled) {
+                playSound(600, 0.1, 'sine', 0.2);
+            }
+        });
+        
+        // Fullscreen toggle
+        elements.fullscreenBtn.addEventListener('click', () => {
+            const container = document.getElementById('game-container');
+            
+            if (!document.fullscreenElement) {
+                if (container.requestFullscreen) {
+                    container.requestFullscreen();
+                } else if (container.webkitRequestFullscreen) {
+                    container.webkitRequestFullscreen();
+                }
+                elements.fullscreenBtn.textContent = '📱';
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+                elements.fullscreenBtn.textContent = '📱';
+            }
+        });
+        
+        // Keyboard support for testing
         document.addEventListener('keydown', (e) => {
-            if (!gameActive) return;
+            if (!gameState.active) return;
             
             if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
                 checkAnswer('greater');
-                greaterBtn.classList.add('flash');
-                setTimeout(() => greaterBtn.classList.remove('flash'), 200);
+                elements.greaterBtn.classList.add('flash');
+                setTimeout(() => elements.greaterBtn.classList.remove('flash'), 200);
             } else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
                 checkAnswer('lesser');
-                lesserBtn.classList.add('flash');
-                setTimeout(() => lesserBtn.classList.remove('flash'), 200);
+                elements.lesserBtn.classList.add('flash');
+                setTimeout(() => elements.lesserBtn.classList.remove('flash'), 200);
             }
         });
         
-        // Toggle suara
-        soundToggle.addEventListener('click', () => {
-            soundEnabled = !soundEnabled;
-            soundToggle.textContent = soundEnabled ? "🔊" : "🔇";
-            
-            if (soundEnabled) {
-                playSound(500, 0.1, 'sine', 0.2);
-            }
-        });
-        
-        // Prevent zoom on mobile
-        document.addEventListener('touchmove', function(e) {
-            if(e.scale !== 1) {
-                e.preventDefault();
-            }
+        // ==================== MOBILE OPTIMIZATIONS ====================
+        // Prevent zoom
+        document.addEventListener('touchmove', (e) => {
+            if (e.scale !== 1) e.preventDefault();
         }, { passive: false });
         
-        // Prevent context menu on mobile
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-            return false;
-        });
+        // Prevent context menu
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
         
-        // Inisialisasi
-        function init() {
-            // Cek jika di mobile
-            if (isMobile) {
+        // Disable pull-to-refresh
+        document.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 1) e.preventDefault();
+        }, { passive: false });
+        
+        // Handle back button on Android
+        if (isAndroid) {
+            window.addEventListener('beforeunload', (e) => {
+                if (gameState.active) {
+                    e.preventDefault();
+                    e.returnValue = 'Game sedang berjalan. Yakin ingin keluar?';
+                }
+            });
+        }
+        
+        // Orientation lock suggestion
+        if (window.screen.orientation && window.screen.orientation.lock) {
+            window.screen.orientation.lock('portrait').catch(() => {});
+        }
+        
+        // ==================== INITIALIZE ====================
+        window.addEventListener('load', () => {
+            // Start audio context on first touch (for iOS)
+            document.body.addEventListener('touchstart', () => {
+                initAudio();
+            }, { once: true });
+            
+            // Auto-suggest fullscreen on mobile
+            if (isAndroid) {
                 setTimeout(() => {
                     playSound(200, 0.2, 'sine', 0.1);
                     playSound(300, 0.2, 'sine', 0.1);
-                }, 500);
+                }, 1000);
             }
-        }
+        });
         
-        window.addEventListener('load', init);
-        
-        // Handle orientation change
-        window.addEventListener('orientationchange', function() {
-            setTimeout(() => {
-                window.location.reload();
-            }, 100);
+        // Handle orientation changes
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => location.reload(), 100);
         });
     </script>
 </body>
