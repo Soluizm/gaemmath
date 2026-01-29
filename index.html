@@ -2,10 +2,10 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Generator Horror</title>
+    <meta name="viewport" content="width=1280, height=720, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Generator Horror HD</title>
     <style>
-        /* RESET MEMEK */
+        /* RESET TOTAL */
         * {
             margin: 0;
             padding: 0;
@@ -17,25 +17,26 @@
         }
         
         html, body {
-            width: 100%;
-            height: 100%;
+            width: 1280px;
+            height: 720px;
             overflow: hidden;
-            background: #000;
+            background: black;
             position: fixed;
+            top: 0;
+            left: 0;
             font-family: 'Arial', sans-serif;
         }
         
-        /* GAME CONTAINER */
+        /* CONTAINER UTAMA */
         #game-container {
-            width: 100vw;
-            height: 100vh;
-            max-width: 100%;
-            max-height: 100%;
+            width: 1280px;
+            height: 720px;
             position: relative;
             background: #000;
+            margin: 0 auto;
         }
         
-        /* START SCREEN */
+        /* LAYAR AWAL */
         #start-screen {
             position: absolute;
             width: 100%;
@@ -46,37 +47,37 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 100px;
             text-align: center;
             z-index: 100;
         }
         
         #start-screen h1 {
             color: #ff0000;
-            font-size: clamp(24px, 8vw, 40px);
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px #ff0000;
+            font-size: 48px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px #ff0000;
         }
         
         #start-screen p {
-            font-size: clamp(14px, 4vw, 18px);
+            font-size: 24px;
             color: #aaa;
-            margin: 10px 0;
-            line-height: 1.4;
-            max-width: 500px;
+            margin: 15px 0;
+            line-height: 1.5;
+            max-width: 800px;
         }
         
         #start-btn {
-            margin-top: 30px;
-            padding: 20px 40px;
-            font-size: clamp(16px, 5vw, 20px);
+            margin-top: 50px;
+            padding: 25px 60px;
+            font-size: 28px;
             background: #300;
             color: #f00;
-            border: 3px solid #600;
-            border-radius: 10px;
+            border: 4px solid #600;
+            border-radius: 15px;
             font-weight: bold;
-            min-width: 200px;
-            min-height: 60px;
+            min-width: 300px;
+            min-height: 80px;
         }
         
         /* GAME SCREEN */
@@ -92,19 +93,17 @@
             display: block;
         }
         
-        /* GENERATOR - POSISI TENGAH */
+        /* GENERATOR - TENGAH LAYAR */
         #generator {
             position: absolute;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%;
-            max-width: 400px;
+            top: 240px; /* 720/2 - 180/2 = 270, gua kasih 240 biar ada space atas */
+            left: 440px; /* 1280/2 - 400/2 = 440 */
+            width: 400px;
             height: 180px;
             background: #222;
-            border: 3px solid #444;
-            border-radius: 10px;
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+            border: 4px solid #444;
+            border-radius: 15px;
+            box-shadow: 0 0 40px rgba(255, 0, 0, 0.6);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -112,33 +111,30 @@
         }
         
         .generator-panel {
-            width: 95%;
-            height: 85%;
+            width: 380px;
+            height: 150px;
             background: #111;
-            border: 2px solid #333;
-            border-radius: 8px;
+            border: 3px solid #333;
+            border-radius: 12px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 15px;
-            gap: 15px;
+            padding: 20px;
+            gap: 20px;
         }
         
         #math-problem {
-            font-size: clamp(24px, 7vw, 32px);
+            font-size: 36px;
             color: white;
-            text-shadow: 0 0 5px #f00;
+            text-shadow: 0 0 10px #f00;
             font-weight: bold;
             text-align: center;
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100%;
         }
         
         #instructions {
-            font-size: clamp(14px, 4vw, 16px);
+            font-size: 22px;
             color: #aaa;
             text-align: center;
         }
@@ -146,14 +142,12 @@
         /* PROGRESS BAR - DI BAWAH GENERATOR */
         #progress-container {
             position: absolute;
-            top: calc(40% + 100px); /* Bawah generator */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            max-width: 300px;
-            height: 15px;
+            top: 450px; /* 240 + 180 + 30 */
+            left: 490px; /* 1280/2 - 300/2 = 490 */
+            width: 300px;
+            height: 20px;
             background: #111;
-            border: 2px solid #333;
+            border: 3px solid #333;
             border-radius: 10px;
             overflow: hidden;
         }
@@ -165,56 +159,51 @@
             transition: width 0.3s;
         }
         
-        /* TOMBOL KONTROL - DI BAWAH PROGRESS */
+        /* TOMBOL KONTROL - BAWAH LAYAR */
         #controls {
             position: absolute;
-            bottom: 30px;
-            left: 0;
-            width: 100%;
+            bottom: 80px;
+            left: 390px; /* 1280/2 - 500/2 = 390 */
+            width: 500px;
             display: flex;
-            justify-content: center;
-            gap: 15px;
-            padding: 0 20px;
+            justify-content: space-between;
         }
         
         .control-btn {
-            flex: 1;
-            max-width: 150px;
-            height: 70px;
+            width: 230px;
+            height: 90px;
             background: #222;
-            border: 3px solid #444;
+            border: 4px solid #444;
             color: white;
-            font-size: clamp(14px, 4vw, 18px);
+            font-size: 24px;
             font-weight: bold;
-            border-radius: 10px;
-            min-height: 70px;
+            border-radius: 15px;
         }
         
         /* UI ATAS */
         #timer {
             position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: clamp(28px, 8vw, 36px);
+            top: 40px;
+            left: 590px; /* 1280/2 - 100/2 = 590 */
+            font-size: 48px;
             color: #f00;
             font-weight: bold;
-            text-shadow: 0 0 10px #f00;
+            text-shadow: 0 0 15px #f00;
         }
         
         #score {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: clamp(16px, 4vw, 20px);
+            top: 40px;
+            right: 40px;
+            font-size: 28px;
             color: white;
         }
         
         #heartbeat {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            font-size: clamp(20px, 6vw, 24px);
+            top: 40px;
+            left: 40px;
+            font-size: 36px;
             color: #f00;
             animation: heartbeat 1s infinite;
         }
@@ -222,8 +211,8 @@
         /* ENTITY */
         #entity {
             position: absolute;
-            width: 80px;
-            height: 120px;
+            width: 100px;
+            height: 150px;
             background: #400;
             border-radius: 50%;
             opacity: 0;
@@ -240,13 +229,13 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.95);
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 20px;
+            padding: 100px;
             z-index: 200;
         }
         
@@ -255,12 +244,12 @@
         }
         
         #win-screen {
-            background: rgba(0, 30, 0, 0.95);
+            background: rgba(0, 30, 0, 0.97);
         }
         
         #win-text, #game-over-text {
-            font-size: clamp(28px, 8vw, 40px);
-            margin-bottom: 20px;
+            font-size: 48px;
+            margin-bottom: 40px;
         }
         
         #win-text {
@@ -272,54 +261,54 @@
         }
         
         #final-score, #final-score-win {
-            font-size: clamp(20px, 6vw, 28px);
+            font-size: 36px;
             color: white;
-            margin: 15px 0;
+            margin: 30px 0;
         }
         
         #win-btn, #restart-btn {
-            margin-top: 30px;
-            padding: 20px 40px;
-            font-size: clamp(16px, 5vw, 20px);
-            border-radius: 10px;
+            margin-top: 50px;
+            padding: 25px 60px;
+            font-size: 28px;
+            border-radius: 15px;
             font-weight: bold;
-            min-width: 200px;
-            min-height: 60px;
+            min-width: 300px;
+            min-height: 80px;
         }
         
         #win-btn {
             background: #030;
             color: #0f0;
-            border: 3px solid #0a0;
+            border: 4px solid #0a0;
         }
         
         #restart-btn {
             background: #300;
             color: #f00;
-            border: 3px solid #600;
+            border: 4px solid #600;
         }
         
         /* TOGGLE BUTTONS */
         #sound-toggle, #fullscreen-btn {
             position: absolute;
-            top: 10px;
+            top: 20px;
             background: rgba(0,0,0,0.7);
             color: white;
-            border: 2px solid #444;
-            padding: 10px;
-            border-radius: 5px;
+            border: 3px solid #444;
+            padding: 15px;
+            border-radius: 10px;
             z-index: 300;
-            font-size: 20px;
-            width: 50px;
-            height: 50px;
+            font-size: 28px;
+            width: 70px;
+            height: 70px;
         }
         
         #sound-toggle {
-            right: 10px;
+            right: 20px;
         }
         
         #fullscreen-btn {
-            left: 10px;
+            left: 20px;
         }
         
         /* ANIMATIONS */
@@ -334,101 +323,29 @@
         }
         
         @keyframes danger {
-            0%, 100% { box-shadow: 0 0 30px rgba(255,0,0,0.5); }
-            50% { box-shadow: 0 0 50px rgba(255,0,0,0.8); }
+            0%, 100% { box-shadow: 0 0 40px rgba(255,0,0,0.6); }
+            50% { box-shadow: 0 0 60px rgba(255,0,0,0.9); }
         }
         
-        /* MEDIA QUERIES BUAT SEMUA HP */
-        /* Portrait */
-        @media (orientation: portrait) {
-            #generator {
-                top: 35%;
-                height: 160px;
-            }
-            
-            #progress-container {
-                top: calc(35% + 90px);
-            }
-            
-            .control-btn {
-                height: 65px;
-                min-height: 65px;
-            }
+        .jumpscare {
+            animation: jumpscare 0.5s forwards;
         }
         
-        /* Landscape */
-        @media (orientation: landscape) and (max-height: 500px) {
-            #generator {
-                top: 30%;
-                height: 140px;
-                width: 80%;
-            }
-            
-            #progress-container {
-                top: calc(30% + 80px);
-            }
-            
-            #controls {
-                bottom: 20px;
-            }
-            
-            .control-btn {
-                height: 60px;
-                min-height: 60px;
-                max-width: 120px;
-            }
-            
-            #timer {
-                top: 10px;
-                font-size: 24px;
-            }
-            
-            #score, #heartbeat {
-                top: 10px;
-                font-size: 16px;
-            }
+        @keyframes jumpscare {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.5); }
+            100% { transform: scale(1); }
         }
         
-        /* HP KECIL */
-        @media (max-height: 600px) {
-            #generator {
-                top: 30%;
-                height: 140px;
+        /* HOVER EFFECTS FOR DESKTOP TESTING */
+        @media (hover: hover) {
+            #start-btn:hover, #win-btn:hover, #restart-btn:hover {
+                transform: scale(1.05);
             }
             
-            #progress-container {
-                top: calc(30% + 80px);
-            }
-            
-            .generator-panel {
-                padding: 10px;
-                gap: 10px;
-            }
-            
-            #math-problem {
-                font-size: 20px;
-            }
-            
-            #instructions {
-                font-size: 14px;
-            }
-        }
-        
-        /* TABLET */
-        @media (min-width: 768px) and (min-height: 700px) {
-            #generator {
-                height: 200px;
-                max-width: 450px;
-            }
-            
-            .control-btn {
-                max-width: 180px;
-                height: 80px;
-                font-size: 20px;
-            }
-            
-            #math-problem {
-                font-size: 32px;
+            .control-btn:hover {
+                background: #333;
+                border-color: #666;
             }
         }
     </style>
@@ -437,7 +354,8 @@
     <div id="game-container">
         <!-- START SCREEN -->
         <div id="start-screen">
-            <h1>🔧 GENERATOR HORROR</h1>
+            <h1>🔧 GENERATOR HORROR HD</h1>
+            <p>Optimized for 1280x720 Resolution</p>
             <p>Perbaiki generator dengan menjawab soal matematika sebelum entitas menangkapmu!</p>
             <p><strong>Cara main:</strong> Pilih mana yang lebih besar atau lebih kecil dari dua operasi perkalian.</p>
             <p>Jawab cepat sebelum waktu habis!</p>
@@ -476,7 +394,7 @@
         <div id="win-screen">
             <h1 id="win-text">🎉 MENANG!</h1>
             <p id="final-score-win">Skor: 0</p>
-            <p>Generator berhasil diperbaiki!</p>
+            <p style="font-size: 28px;">Generator berhasil diperbaiki!</p>
             <button id="win-btn">🔄 MAIN LAGI</button>
         </div>
         
@@ -484,49 +402,57 @@
         <div id="game-over-screen">
             <h1 id="game-over-text">💀 GAME OVER</h1>
             <p id="final-score">Skor: 0</p>
-            <p>Entitas menangkapmu...</p>
+            <p style="font-size: 28px;">Entitas menangkapmu...</p>
             <button id="restart-btn">🔄 COBA LAGI</button>
         </div>
     </div>
 
     <script>
-        // SIMPLE FIXED GAME LOGIC
-        const startScreen = document.getElementById('start-screen');
-        const gameScreen = document.getElementById('game-screen');
-        const winScreen = document.getElementById('win-screen');
-        const gameOverScreen = document.getElementById('game-over-screen');
-        const startBtn = document.getElementById('start-btn');
-        const winBtn = document.getElementById('win-btn');
-        const restartBtn = document.getElementById('restart-btn');
-        const timerEl = document.getElementById('timer');
-        const scoreEl = document.getElementById('score');
-        const mathProblem = document.getElementById('math-problem');
-        const progressBar = document.getElementById('progress-bar');
-        const greaterBtn = document.getElementById('greater-btn');
-        const lesserBtn = document.getElementById('lesser-btn');
-        const entity = document.getElementById('entity');
-        const soundToggle = document.getElementById('sound-toggle');
-        const fullscreenBtn = document.getElementById('fullscreen-btn');
-        const finalScore = document.getElementById('final-score');
-        const finalScoreWin = document.getElementById('final-score-win');
+        // FIXED POSITIONS FOR 1280x720
+        const SCREEN_WIDTH = 1280;
+        const SCREEN_HEIGHT = 720;
         
-        // GAME STATE
-        let score = 0;
-        let timeLeft = 60;
-        let progress = 0;
-        let gameActive = false;
-        let timerInterval;
-        let entityDistance = 100;
-        let entitySpeed = 2;
-        let soundEnabled = true;
-        let problemsSolved = 0;
-        let totalQuestions = 0;
-        let correctAnswers = 0;
-        let currentProblem = null;
+        // DOM Elements
+        const elements = {
+            startScreen: document.getElementById('start-screen'),
+            gameScreen: document.getElementById('game-screen'),
+            winScreen: document.getElementById('win-screen'),
+            gameOverScreen: document.getElementById('game-over-screen'),
+            startBtn: document.getElementById('start-btn'),
+            winBtn: document.getElementById('win-btn'),
+            restartBtn: document.getElementById('restart-btn'),
+            timer: document.getElementById('timer'),
+            score: document.getElementById('score'),
+            mathProblem: document.getElementById('math-problem'),
+            progressBar: document.getElementById('progress-bar'),
+            greaterBtn: document.getElementById('greater-btn'),
+            lesserBtn: document.getElementById('lesser-btn'),
+            entity: document.getElementById('entity'),
+            soundToggle: document.getElementById('sound-toggle'),
+            fullscreenBtn: document.getElementById('fullscreen-btn'),
+            finalScore: document.getElementById('final-score'),
+            finalScoreWin: document.getElementById('final-score-win')
+        };
         
-        // SOUND FUNCTIONS
+        // Game State
+        let gameState = {
+            score: 0,
+            timeLeft: 60,
+            progress: 0,
+            active: false,
+            entityDistance: 100,
+            entitySpeed: 2,
+            soundEnabled: true,
+            problemsSolved: 0,
+            totalQuestions: 0,
+            correctAnswers: 0,
+            currentProblem: null,
+            timerInterval: null
+        };
+        
+        // Audio Functions
         function playSound(freq, duration) {
-            if (!soundEnabled) return;
+            if (!gameState.soundEnabled) return;
             try {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const oscillator = audioContext.createOscillator();
@@ -544,154 +470,162 @@
             } catch(e) {}
         }
         
-        // GENERATE MATH PROBLEM
+        // Generate Math Problem
         function generateMathProblem() {
-            const leftNum1 = Math.floor(Math.random() * 12) + 2;
-            const leftNum2 = Math.floor(Math.random() * 12) + 2;
-            const rightNum1 = Math.floor(Math.random() * 12) + 2;
-            const rightNum2 = Math.floor(Math.random() * 12) + 2;
+            const nums = [
+                Math.floor(Math.random() * 12) + 2,
+                Math.floor(Math.random() * 12) + 2,
+                Math.floor(Math.random() * 12) + 2,
+                Math.floor(Math.random() * 12) + 2
+            ];
             
-            const leftResult = leftNum1 * leftNum2;
-            const rightResult = rightNum1 * rightNum2;
+            const leftResult = nums[0] * nums[1];
+            const rightResult = nums[2] * nums[3];
             
-            // Ensure different results
             if (leftResult === rightResult) {
+                nums[3] = (nums[3] % 11) + 2;
                 return generateMathProblem();
             }
             
-            currentProblem = {
-                left: { num1: leftNum1, num2: leftNum2, result: leftResult },
-                right: { num1: rightNum1, num2: rightNum2, result: rightResult },
+            gameState.currentProblem = {
+                left: { num1: nums[0], num2: nums[1], result: leftResult },
+                right: { num1: nums[2], num2: nums[3], result: rightResult },
                 correctAnswer: leftResult > rightResult ? 'greater' : 'lesser'
             };
             
-            // DISPLAY BOTH OPERATIONS
-            mathProblem.textContent = `${leftNum1} × ${leftNum2} ______ ${rightNum1} × ${rightNum2}`;
-            
-            totalQuestions++;
+            elements.mathProblem.textContent = `${nums[0]} × ${nums[1]} ______ ${nums[2]} × ${nums[3]}`;
+            gameState.totalQuestions++;
             playSound(400, 0.1);
         }
         
-        // CHECK ANSWER
+        // Check Answer
         function checkAnswer(answer) {
-            if (!gameActive) return;
+            if (!gameState.active) return;
             
             playSound(300, 0.1);
             
-            if (answer === currentProblem.correctAnswer) {
-                // Correct
-                score += 10;
-                progress += 10;
-                problemsSolved++;
-                correctAnswers++;
+            const correct = answer === gameState.currentProblem.correctAnswer;
+            
+            if (correct) {
+                gameState.score += 10;
+                gameState.progress += 10;
+                gameState.problemsSolved++;
+                gameState.correctAnswers++;
                 
-                progressBar.style.width = `${progress}%`;
-                scoreEl.textContent = `Skor: ${score}`;
+                elements.progressBar.style.width = `${gameState.progress}%`;
+                elements.score.textContent = `Skor: ${gameState.score}`;
                 
                 playSound(800, 0.2);
                 
-                if (progress >= 100) {
+                if (gameState.progress >= 100) {
                     winGame();
                     return;
                 }
                 
                 generateMathProblem();
                 
-                if (problemsSolved % 5 === 0) {
-                    entitySpeed += 0.5;
-                    timeLeft = Math.min(timeLeft + 5, 60);
+                if (gameState.problemsSolved % 5 === 0) {
+                    gameState.entitySpeed += 0.5;
+                    gameState.timeLeft = Math.min(gameState.timeLeft + 5, 60);
                 }
             } else {
-                // Wrong
-                progress = Math.max(0, progress - 15);
-                progressBar.style.width = `${progress}%`;
+                gameState.progress = Math.max(0, gameState.progress - 15);
+                elements.progressBar.style.width = `${gameState.progress}%`;
                 
                 playSound(150, 0.3);
-                entityDistance = Math.max(0, entityDistance - 20);
+                gameState.entityDistance = Math.max(0, gameState.entityDistance - 20);
             }
             
             updateEntity();
         }
         
-        // UPDATE ENTITY POSITION
+        // Update Entity Position
         function updateEntity() {
-            entityDistance = Math.max(0, entityDistance - entitySpeed);
+            gameState.entityDistance = Math.max(0, gameState.entityDistance - gameState.entitySpeed);
             
-            // Position entity based on distance
-            const leftPos = 50 + (50 * (entityDistance / 100));
-            const topPos = 30 + (40 * (entityDistance / 100));
-            const size = 80 + (40 * (1 - entityDistance / 100));
+            // Calculate position based on distance (100 = far right, 0 = near center)
+            const xPos = 1000 + (280 * (gameState.entityDistance / 100)); // 1000 to 1280
+            const yPos = 200 + (300 * (gameState.entityDistance / 100)); // 200 to 500
+            const size = 80 + (40 * (1 - gameState.entityDistance / 100));
             
-            entity.style.left = `${leftPos}%`;
-            entity.style.top = `${topPos}%`;
-            entity.style.width = `${size}px`;
-            entity.style.height = `${size * 1.5}px`;
+            elements.entity.style.left = `${xPos}px`;
+            elements.entity.style.top = `${yPos}px`;
+            elements.entity.style.width = `${size}px`;
+            elements.entity.style.height = `${size * 1.5}px`;
             
-            if (entityDistance < 30) {
-                entity.classList.add('entity-visible');
+            if (gameState.entityDistance < 30) {
+                elements.entity.classList.add('entity-visible');
                 
-                if (entityDistance < 10) {
-                    gameScreen.classList.add('danger-close');
+                if (gameState.entityDistance < 10) {
+                    elements.gameScreen.classList.add('danger-close');
                     playSound(80, 0.1);
                 } else {
-                    gameScreen.classList.remove('danger-close');
+                    elements.gameScreen.classList.remove('danger-close');
                 }
             } else {
-                entity.classList.remove('entity-visible');
-                gameScreen.classList.remove('danger-close');
+                elements.entity.classList.remove('entity-visible');
+                elements.gameScreen.classList.remove('danger-close');
             }
             
-            if (entityDistance <= 0) {
+            if (gameState.entityDistance <= 0) {
                 gameOver();
             }
         }
         
-        // UPDATE TIMER
+        // Update Timer
         function updateTimer() {
-            if (!gameActive) return;
+            if (!gameState.active) return;
             
-            timeLeft--;
-            timerEl.textContent = timeLeft;
+            gameState.timeLeft--;
+            elements.timer.textContent = gameState.timeLeft;
             
-            if (timeLeft <= 10) {
-                timerEl.style.color = '#ff0000';
+            if (gameState.timeLeft <= 10) {
+                elements.timer.style.color = '#ff0000';
+                elements.timer.style.textShadow = '0 0 20px #ff0000';
                 playSound(200, 0.1);
             }
             
-            if (timeLeft <= 0) {
+            if (gameState.timeLeft <= 0) {
                 gameOver();
             }
         }
         
-        // START GAME
+        // Start Game
         function startGame() {
-            startScreen.style.display = 'none';
-            gameScreen.classList.add('active');
-            winScreen.classList.remove('active');
-            gameOverScreen.classList.remove('active');
+            elements.startScreen.style.display = 'none';
+            elements.gameScreen.classList.add('active');
+            elements.winScreen.classList.remove('active');
+            elements.gameOverScreen.classList.remove('active');
             
-            gameActive = true;
-            score = 0;
-            timeLeft = 60;
-            progress = 0;
-            entityDistance = 100;
-            entitySpeed = 2;
-            problemsSolved = 0;
-            totalQuestions = 0;
-            correctAnswers = 0;
+            gameState = {
+                score: 0,
+                timeLeft: 60,
+                progress: 0,
+                active: true,
+                entityDistance: 100,
+                entitySpeed: 2,
+                soundEnabled: true,
+                problemsSolved: 0,
+                totalQuestions: 0,
+                correctAnswers: 0,
+                currentProblem: null,
+                timerInterval: null
+            };
             
-            scoreEl.textContent = `Skor: ${score}`;
-            timerEl.textContent = timeLeft;
-            timerEl.style.color = '#ff0000';
-            progressBar.style.width = '0%';
+            elements.score.textContent = `Skor: ${gameState.score}`;
+            elements.timer.textContent = gameState.timeLeft;
+            elements.timer.style.color = '#ff0000';
+            elements.timer.style.textShadow = '0 0 15px #ff0000';
+            elements.progressBar.style.width = '0%';
+            elements.soundToggle.textContent = '🔊';
             
             generateMathProblem();
             
-            clearInterval(timerInterval);
-            timerInterval = setInterval(updateTimer, 1000);
+            clearInterval(gameState.timerInterval);
+            gameState.timerInterval = setInterval(updateTimer, 1000);
             
             const gameLoop = setInterval(() => {
-                if (!gameActive) {
+                if (!gameState.active) {
                     clearInterval(gameLoop);
                     return;
                 }
@@ -701,67 +635,65 @@
             playSound(100, 0.5);
         }
         
-        // WIN GAME
+        // Win Game
         function winGame() {
-            gameActive = false;
-            clearInterval(timerInterval);
+            gameState.active = false;
+            clearInterval(gameState.timerInterval);
             
             playSound(800, 0.5);
             playSound(1000, 0.5);
             playSound(1200, 0.5);
             
-            finalScoreWin.textContent = `Skor: ${score}`;
+            elements.finalScoreWin.textContent = `Skor: ${gameState.score}`;
             
             setTimeout(() => {
-                gameScreen.classList.remove('active');
-                winScreen.classList.add('active');
+                elements.gameScreen.classList.remove('active');
+                elements.winScreen.classList.add('active');
             }, 1500);
         }
         
-        // GAME OVER
+        // Game Over
         function gameOver() {
-            gameActive = false;
-            clearInterval(timerInterval);
+            gameState.active = false;
+            clearInterval(gameState.timerInterval);
             
-            entity.classList.add('jumpscare');
+            elements.entity.classList.add('jumpscare');
             playSound(50, 0.8);
             
-            finalScore.textContent = `Skor: ${score}`;
+            elements.finalScore.textContent = `Skor: ${gameState.score}`;
             
             setTimeout(() => {
-                gameScreen.classList.remove('active');
-                gameOverScreen.classList.add('active');
+                elements.gameScreen.classList.remove('active');
+                elements.gameOverScreen.classList.add('active');
             }, 1500);
         }
         
-        // EVENT LISTENERS
-        startBtn.addEventListener('click', startGame);
-        winBtn.addEventListener('click', startGame);
-        restartBtn.addEventListener('click', startGame);
+        // Event Listeners
+        elements.startBtn.addEventListener('click', startGame);
+        elements.winBtn.addEventListener('click', startGame);
+        elements.restartBtn.addEventListener('click', startGame);
         
-        greaterBtn.addEventListener('click', () => checkAnswer('greater'));
-        lesserBtn.addEventListener('click', () => checkAnswer('lesser'));
+        elements.greaterBtn.addEventListener('click', () => checkAnswer('greater'));
+        elements.lesserBtn.addEventListener('click', () => checkAnswer('lesser'));
         
-        soundToggle.addEventListener('click', () => {
-            soundEnabled = !soundEnabled;
-            soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
-            if (soundEnabled) playSound(600, 0.1);
+        elements.soundToggle.addEventListener('click', () => {
+            gameState.soundEnabled = !gameState.soundEnabled;
+            elements.soundToggle.textContent = gameState.soundEnabled ? '🔊' : '🔇';
+            if (gameState.soundEnabled) playSound(600, 0.1);
         });
         
-        fullscreenBtn.addEventListener('click', () => {
+        elements.fullscreenBtn.addEventListener('click', () => {
             const container = document.getElementById('game-container');
             if (!document.fullscreenElement) {
-                container.requestFullscreen().catch(err => {
-                    console.log('Fullscreen error:', err);
-                });
+                container.requestFullscreen();
             } else {
                 document.exitFullscreen();
             }
         });
         
-        // KEYBOARD SUPPORT
+        // Keyboard Support
         document.addEventListener('keydown', (e) => {
-            if (!gameActive) return;
+            if (!gameState.active) return;
             
             if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
                 checkAnswer('greater');
@@ -770,14 +702,25 @@
             }
         });
         
-        // MOBILE TOUCH OPTIMIZATIONS
-        document.addEventListener('touchstart', (e) => {
+        // Mobile Touch
+        elements.greaterBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            elements.greaterBtn.style.background = '#333';
+        });
+        
+        elements.lesserBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            elements.lesserBtn.style.background = '#333';
+        });
+        
+        // Prevent Zoom
+        document.addEventListener('touchmove', (e) => {
             if (e.touches.length > 1) e.preventDefault();
         }, { passive: false });
         
-        // INIT
+        // Auto-start for testing
         window.addEventListener('load', () => {
-            // Auto start for testing
+            // Uncomment untuk auto start
             // startGame();
         });
     </script>
