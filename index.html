@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator's Nightmare</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #game-container {
+            width: 900px;
+            height: 600px;
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(139, 0, 0, 0.5);
+        }
+        
+        #game-screen {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background-image: radial-gradient(circle at 30% 20%, #111 0%, #000 70%);
+        }
+        
+        #game-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(0, 0, 0, 0.15) 0px,
+                    rgba(0, 0, 0, 0.15) 1px,
+                    transparent 1px,
+                    transparent 2px
+                );
+        }
+        
+        #generator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 350px;
+            height: 250px;
+            background-color: #222;
+            border: 3px solid #444;
+            border-radius: 10px;
+            box-shadow: 
+                0 0 20px rgba(100, 0, 0, 0.7),
+                inset 0 0 20px rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        }
+        
+        .generator-panel {
+            width: 90%;
+            height: 80%;
+            background-color: #111;
+            border: 2px solid #333;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            gap: 25px;
+        }
+        
+        .generator-light {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background-color: #300;
+            box-shadow: 0 0 5px #f00;
+            transition: background-color 0.5s;
+        }
+        
+        .generator-light.active {
+            background-color: #f00;
+            box-shadow: 0 0 15px #f00;
+            animation: flicker 0.3s infinite alternate;
+        }
+        
+        #math-problem {
+            font-size: 28px;
+            text-align: center;
+            color: #f0f0f0;
+            text-shadow: 0 0 5px #f00;
+            font-weight: bold;
+            letter-spacing: 1px;
+            line-height: 1.3;
+        }
+        
+        #instructions {
+            font-size: 16px;
+            text-align: center;
+            color: #aaa;
+            text-shadow: 0 0 3px #000;
+            line-height: 1.4;
+            max-width: 90%;
+        }
+        
+        #controls {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 30px;
+            z-index: 3;
+        }
+        
+        .control-btn {
+            width: 120px;
+            height: 50px;
+            background-color: #222;
+            border: 2px solid #444;
+            color: #e0e0e0;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-shadow: 0 0 5px #f00;
+            letter-spacing: 1px;
+        }
+        
+        .control-btn:hover {
+            background-color: #333;
+            border-color: #666;
+            transform: scale(1.05);
+        }
+        
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+        
+        #progress-container {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 20px;
+            background-color: #111;
+            border: 2px solid #333;
+            border-radius: 10px;
+            overflow: hidden;
+            z-index: 3;
+        }
+        
+        #progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #900;
+            transition: width 0.5s;
+            box-shadow: 0 0 10px #f00;
+        }
+        
+        #timer {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 28px;
+            color: #f00;
+            text-shadow: 0 0 10px #f00;
+            font-weight: bold;
+            z-index: 3;
+            letter-spacing: 2px;
+        }
+        
+        #score {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            font-size: 24px;
+            color: #f0f0f0;
+            z-index: 3;
+            text-shadow: 0 0 5px #f00;
+        }
+        
+        #heartbeat {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            font-size: 24px;
+            color: #f00;
+            z-index: 3;
+            text-shadow: 0 0 5px #f00;
+            animation: heartbeat 1.5s infinite;
+        }
+        
+        .danger-close {
+            animation: danger-pulse 0.8s infinite;
+        }
+        
+        #entity {
+            position: absolute;
+            width: 80px;
+            height: 120px;
+            background-color: transparent;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 150"><path d="M50,10 C70,10 85,30 85,60 C85,80 75,95 60,110 L60,140 L40,140 L40,110 C25,95 15,80 15,60 C15,30 30,10 50,10 Z" fill="rgba(30,0,0,0.8)"/><circle cx="40" cy="50" r="5" fill="rgba(255,0,0,0.7)"/><circle cx="60" cy="50" r="5" fill="rgba(255,0,0,0.7)"/><path d="M50,80 Q55,90 50,100 Q45,90 50,80 Z" fill="rgba(100,0,0,0.9)"/></svg>');
+            background-repeat: no-repeat;
+            background-size: contain;
+            filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.7));
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .entity-visible {
+            opacity: 0.9 !important;
+        }
+        
+        .jumpscare {
+            animation: jumpscare 0.5s forwards;
+        }
+        
+        #sound-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.5);
+            color: #aaa;
+            border: 1px solid #444;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 100;
+        }
+        
+        @keyframes flicker {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes danger-pulse {
+            0% { box-shadow: 0 0 20px rgba(100, 0, 0, 0.7); }
+            50% { box-shadow: 0 0 40px rgba(255, 0, 0, 0.9); }
+            100% { box-shadow: 0 0 20px rgba(100, 0, 0, 0.7); }
+        }
+        
+        @keyframes jumpscare {
+            0% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.3); filter: brightness(1.5); }
+            100% { transform: scale(1); filter: brightness(1); }
+        }
+        
+        #start-screen, #win-screen, #game-over-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        #win-screen {
+            background-color: rgba(0, 20, 0, 0.95);
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        h1 {
+            color: #f00;
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #f00;
+            letter-spacing: 3px;
+        }
+        
+        #win-text {
+            color: #0f0;
+            text-shadow: 0 0 15px #0f0;
+        }
+        
+        #game-over-text {
+            color: #f00;
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px #f00;
+        }
+        
+        h2 {
+            color: #e0e0e0;
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+        
+        p {
+            color: #aaa;
+            font-size: 18px;
+            max-width: 600px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        #congrats-message {
+            color: #afa;
+            font-size: 22px;
+            max-width: 600px;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        
+        #final-message {
+            color: #faa;
+            font-size: 20px;
+            max-width: 600px;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        
+        #final-score, #final-score-win {
+            color: #fff;
+            font-size: 28px;
+            margin: 20px 0;
+            text-shadow: 0 0 10px #f00;
+        }
+        
+        #final-score-win {
+            color: #0f0;
+            text-shadow: 0 0 10px #0f0;
+        }
+        
+        #stats {
+            background-color: rgba(0, 30, 0, 0.7);
+            border: 2px solid #0a0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            max-width: 400px;
+        }
+        
+        .stat-item {
+            color: #cfc;
+            font-size: 18px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        #start-btn, #restart-btn, #win-btn {
+            margin-top: 30px;
+            padding: 15px 40px;
+            font-size: 20px;
+            background-color: #300;
+            color: #f00;
+            border: 2px solid #600;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+        }
+        
+        #win-btn {
+            background-color: #030;
+            color: #0f0;
+            border: 2px solid #0a0;
+        }
+        
+        #start-btn:hover, #restart-btn:hover {
+            background-color: #500;
+            border-color: #900;
+            transform: scale(1.05);
+        }
+        
+        #win-btn:hover {
+            background-color: #050;
+            border-color: #0f0;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #0f0;
+        }
+        
+        .fireworks {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99;
+        }
+        
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            animation: firework 1.5s forwards;
+        }
+        
+        @keyframes firework {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 0;
+                background-color: #0f0;
+            }
+        }
+        
+        .blink {
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        .flash {
+            animation: flash 0.2s;
+        }
+        
+        @keyframes flash {
+            0% { filter: brightness(1); }
+            50% { filter: brightness(1.8); }
+            100% { filter: brightness(1); }
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="game-screen">
+            <!-- Layar awal -->
+            <div id="start-screen">
+                <h1>GENERATOR'S NIGHTMARE</h1>
+                <h2>Perbaiki Generator Sebelum Terlambat</h2>
+                <p>Anda terperangkap di area yang gelap dengan entitas mengerikan yang mendekat. Satu-satunya cara untuk bertahan hidup adalah memperbaiki generator dengan menjawab soal matematika.</p>
+                <p><strong>Cara Bermain:</strong><br>
+                1. Anda akan diberikan dua operasi perkalian<br>
+                2. Tentukan mana yang lebih besar atau lebih kecil<br>
+                3. Tekan tombol "LEBIH BESAR" atau "LEBIH KECIL"<br>
+                4. Jawab dengan cepat sebelum waktu habis!</p>
+                <p>Hati-hati! Entitas akan semakin mendekat seiring waktu. Jika terlalu dekat, Anda akan ketakutan dan kesulitan berkonsentrasi!</p>
+                <button id="start-btn">MULAI PERBAIKAN</button>
+            </div>
+            
+            <!-- Layar kemenangan -->
+            <div id="win-screen" class="hidden">
+                <h1 id="win-text">GENERATOR DIPERBAIKI!</h1>
+                <p id="final-score-win">Skor Akhir: 0</p>
+                <p id="congrats-message">Selamat! Anda berhasil memperbaiki generator dan melarikan diri dari entitas mengerikan!</p>
+                
+                <div id="stats">
+                    <div class="stat-item">
+                        <span>Soal Dijawab:</span>
+                        <span id="stat-questions">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Akurasi:</span>
+                        <span id="stat-accuracy">0%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Waktu Tersisa:</span>
+                        <span id="stat-time">0 detik</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Entitas Terdekat:</span>
+                        <span id="stat-entity">0%</span>
+                    </div>
+                </div>
+                
+                <button id="win-btn">MAIN LAGI</button>
+            </div>
+            
+            <!-- Layar game over -->
+            <div id="game-over-screen" class="hidden">
+                <h1 id="game-over-text">GAME OVER</h1>
+                <p id="final-score">Skor: 0</p>
+                <p id="final-message">Generator gagal diperbaiki. Entitas telah menemukan Anda...</p>
+                <button id="restart-btn">COBA LAGI</button>
+            </div>
+            
+            <!-- Game utama -->
+            <div id="game-overlay"></div>
+            <div id="heartbeat">❤️</div>
+            <div id="timer">60</div>
+            <div id="score">Skor: 0</div>
+            
+            <div id="entity"></div>
+            
+            <div id="generator">
+                <div class="generator-light" id="generator-light"></div>
+                <div class="generator-panel">
+                    <div id="math-problem">13 × 4 ______ 15 × 9</div>
+                    <div id="instructions">Pilih mana yang lebih besar atau lebih kecil</div>
+                </div>
+            </div>
+            
+            <div id="progress-container">
+                <div id="progress-bar"></div>
+            </div>
+            
+            <div id="controls">
+                <button class="control-btn" id="greater-btn">LEBIH BESAR</button>
+                <button class="control-btn" id="lesser-btn">LEBIH KECIL</button>
+            </div>
+        </div>
+        
+        <button id="sound-toggle">🔊 SUARA: ON</button>
+    </div>
+
+    <script>
+        // Elemen DOM
+        const startScreen = document.getElementById('start-screen');
+        const winScreen = document.getElementById('win-screen');
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const startBtn = document.getElementById('start-btn');
+        const winBtn = document.getElementById('win-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const timerElement = document.getElementById('timer');
+        const scoreElement = document.getElementById('score');
+        const mathProblemElement = document.getElementById('math-problem');
+        const progressBar = document.getElementById('progress-bar');
+        const generatorLight = document.getElementById('generator-light');
+        const greaterBtn = document.getElementById('greater-btn');
+        const lesserBtn = document.getElementById('lesser-btn');
+        const entity = document.getElementById('entity');
+        const soundToggle = document.getElementById('sound-toggle');
+        const finalScoreElement = document.getElementById('final-score');
+        const finalScoreWinElement = document.getElementById('final-score-win');
+        const congratsMessageElement = document.getElementById('congrats-message');
+        const finalMessageElement = document.getElementById('final-message');
+        
+        // Elemen statistik
+        const statQuestionsElement = document.getElementById('stat-questions');
+        const statAccuracyElement = document.getElementById('stat-accuracy');
+        const statTimeElement = document.getElementById('stat-time');
+        const statEntityElement = document.getElementById('stat-entity');
+        
+        // Variabel game
+        let score = 0;
+        let timeLeft = 60;
+        let progress = 0;
+        let gameActive = false;
+        let timerInterval;
+        let entityDistance = 100;
+        let entitySpeed = 2;
+        let soundEnabled = true;
+        let problemsSolved = 0;
+        let totalQuestions = 0;
+        let correctAnswers = 0;
+        
+        // Soal matematika
+        let currentProblem = {
+            left: { num1: 0, num2: 0, result: 0 },
+            right: { num1: 0, num2: 0, result: 0 },
+            correctAnswer: ''
+        };
+        
+        // Efek suara
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(frequency, duration, type = 'sine', volume = 0.3) {
+            if (!soundEnabled) return;
+            
+            try {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = frequency;
+                oscillator.type = type;
+                
+                gainNode.gain.value = volume;
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + duration);
+            } catch (e) {
+                console.log("Error playing sound:", e);
+            }
+        }
+        
+        // Fungsi efek kembang api
+        function createFireworks() {
+            const colors = ['#0f0', '#0ff', '#ff0', '#f0f'];
+            const messages = [
+                "Generator berhasil diperbaiki!",
+                "Anda berhasil melarikan diri!",
+                "Entitas berhasil dikalahkan!",
+                "Keselamatan tercapai!"
+            ];
+            
+            // Update pesan selamat
+            congratsMessageElement.textContent = messages[Math.floor(Math.random() * messages.length)];
+            
+            // Buat efek kembang api
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const firework = document.createElement('div');
+                    firework.className = 'firework';
+                    firework.style.left = `${Math.random() * 100}%`;
+                    firework.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    firework.style.animationDelay = `${Math.random() * 0.5}s`;
+                    
+                    document.getElementById('game-screen').appendChild(firework);
+                    
+                    setTimeout(() => {
+                        if (firework.parentNode) {
+                            firework.parentNode.removeChild(firework);
+                        }
+                    }, 1500);
+                }, i * 50);
+            }
+        }
+        
+        // Fungsi untuk menghasilkan soal matematika
+        function generateMathProblem() {
+            const leftNum1 = Math.floor(Math.random() * 14) + 2;
+            const leftNum2 = Math.floor(Math.random() * 14) + 2;
+            const rightNum1 = Math.floor(Math.random() * 14) + 2;
+            const rightNum2 = Math.floor(Math.random() * 14) + 2;
+            
+            const leftResult = leftNum1 * leftNum2;
+            const rightResult = rightNum1 * rightNum2;
+            
+            currentProblem = {
+                left: { num1: leftNum1, num2: leftNum2, result: leftResult },
+                right: { num1: rightNum1, num2: rightNum2, result: rightResult },
+                correctAnswer: leftResult > rightResult ? 'greater' : 'lesser'
+            };
+            
+            mathProblemElement.textContent = `${leftNum1} × ${leftNum2} ______ ${rightNum1} × ${rightNum2}`;
+            mathProblemElement.classList.remove('flash');
+            void mathProblemElement.offsetWidth;
+            mathProblemElement.classList.add('flash');
+            
+            totalQuestions++;
+            
+            playSound(300, 0.1, 'sine', 0.1);
+            playSound(400, 0.1, 'sine', 0.1);
+        }
+        
+        // Fungsi untuk memeriksa jawaban
+        function checkAnswer(answer) {
+            if (!gameActive) return;
+            
+            playSound(200, 0.1, 'square', 0.2);
+            
+            if (answer === currentProblem.correctAnswer) {
+                score += 10;
+                progress += 10;
+                problemsSolved++;
+                correctAnswers++;
+                
+                progressBar.style.width = `${progress}%`;
+                scoreElement.textContent = `Skor: ${score}`;
+                
+                playSound(600, 0.2, 'sine', 0.3);
+                
+                if (progress >= 100) {
+                    winGame();
+                    return;
+                }
+                
+                generateMathProblem();
+                
+                if (problemsSolved % 5 === 0) {
+                    entitySpeed += 0.5;
+                    timeLeft = Math.min(timeLeft + 5, 60);
+                }
+            } else {
+                progress = Math.max(0, progress - 15);
+                progressBar.style.width = `${progress}%`;
+                
+                playSound(150, 0.3, 'sawtooth', 0.4);
+                entityDistance = Math.max(0, entityDistance - 15);
+            }
+            
+            updateEntityPosition();
+        }
+        
+        // Fungsi untuk memperbarui posisi entitas
+        function updateEntityPosition() {
+            entityDistance = Math.max(0, entityDistance - entitySpeed);
+            
+            const maxDistance = 100;
+            const distancePercent = entityDistance / maxDistance;
+            
+            const leftPos = 50 + (50 * distancePercent);
+            const topPos = 30 + (40 * distancePercent);
+            const size = 80 + (40 * (1 - distancePercent));
+            
+            entity.style.left = `${leftPos}%`;
+            entity.style.top = `${topPos}%`;
+            entity.style.width = `${size}px`;
+            entity.style.height = `${size * 1.5}px`;
+            
+            if (entityDistance < 30) {
+                entity.classList.add('entity-visible');
+                
+                if (entityDistance < 10) {
+                    gameScreen.classList.add('danger-close');
+                } else {
+                    gameScreen.classList.remove('danger-close');
+                }
+            } else {
+                entity.classList.remove('entity-visible');
+                gameScreen.classList.remove('danger-close');
+            }
+            
+            if (entityDistance <= 0) {
+                gameOver();
+            }
+        }
+        
+        // Fungsi untuk memulai game
+        function startGame() {
+            startScreen.classList.add('hidden');
+            winScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+            gameActive = true;
+            
+            score = 0;
+            timeLeft = 60;
+            progress = 0;
+            entityDistance = 100;
+            entitySpeed = 2;
+            problemsSolved = 0;
+            totalQuestions = 0;
+            correctAnswers = 0;
+            
+            scoreElement.textContent = `Skor: ${score}`;
+            timerElement.textContent = timeLeft;
+            progressBar.style.width = '0%';
+            
+            generateMathProblem();
+            
+            clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            const gameLoop = setInterval(() => {
+                if (!gameActive) {
+                    clearInterval(gameLoop);
+                    return;
+                }
+                updateEntityPosition();
+            }, 1000);
+            
+            playSound(80, 0.5, 'sine', 0.05);
+        }
+        
+        // Fungsi untuk mengupdate timer
+        function updateTimer() {
+            if (!gameActive) return;
+            
+            timeLeft--;
+            timerElement.textContent = timeLeft;
+            
+            if (timeLeft <= 10) {
+                timerElement.classList.add('blink');
+                playSound(100, 0.1, 'sine', 0.2);
+            } else {
+                timerElement.classList.remove('blink');
+            }
+            
+            if (timeLeft <= 0) {
+                gameOver();
+            }
+        }
+        
+        // Fungsi ketika menang
+        function winGame() {
+            gameActive = false;
+            clearInterval(timerInterval);
+            
+            generatorLight.classList.add('active');
+            playSound(800, 0.5, 'sine', 0.5);
+            playSound(1000, 0.5, 'sine', 0.5);
+            playSound(1200, 0.5, 'sine', 0.5);
+            
+            // Update statistik
+            finalScoreWinElement.textContent = `Skor Akhir: ${score}`;
+            statQuestionsElement.textContent = problemsSolved;
+            statAccuracyElement.textContent = totalQuestions > 0 ? 
+                Math.round((correctAnswers / totalQuestions) * 100) + '%' : '0%';
+            statTimeElement.textContent = `${timeLeft} detik`;
+            statEntityElement.textContent = `${Math.round((100 - entityDistance))}%`;
+            
+            // Buat efek kembang api
+            createFireworks();
+            
+            // Tampilkan layar kemenangan
+            setTimeout(() => {
+                winScreen.classList.remove('hidden');
+            }, 1500);
+        }
+        
+        // Fungsi ketika game over
+        function gameOver() {
+            gameActive = false;
+            clearInterval(timerInterval);
+            
+            entity.classList.add('jumpscare');
+            playSound(50, 0.8, 'sawtooth', 0.7);
+            
+            // Update teks game over
+            finalScoreElement.textContent = `Skor: ${score}`;
+            
+            // Pilih pesan game over random
+            const gameOverMessages = [
+                "Generator gagal diperbaiki. Entitas telah menemukan Anda...",
+                "Terlalu lambat! Entitas sudah di depan mata...",
+                "Konsentrasi hilang. Entitas mendekat dan...",
+                "Waktu habis. Generator meledak dan menarik perhatian entitas."
+            ];
+            finalMessageElement.textContent = gameOverMessages[Math.floor(Math.random() * gameOverMessages.length)];
+            
+            setTimeout(() => {
+                gameOverScreen.classList.remove('hidden');
+            }, 1500);
+        }
+        
+        // Event listeners
+        startBtn.addEventListener('click', startGame);
+        winBtn.addEventListener('click', startGame);
+        restartBtn.addEventListener('click', startGame);
+        
+        greaterBtn.addEventListener('click', () => {
+            checkAnswer('greater');
+        });
+        
+        lesserBtn.addEventListener('click', () => {
+            checkAnswer('lesser');
+        });
+        
+        // Kontrol keyboard
+        document.addEventListener('keydown', (e) => {
+            if (!gameActive) return;
+            
+            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+                checkAnswer('greater');
+                greaterBtn.classList.add('flash');
+                setTimeout(() => greaterBtn.classList.remove('flash'), 200);
+            } else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+                checkAnswer('lesser');
+                lesserBtn.classList.add('flash');
+                setTimeout(() => lesserBtn.classList.remove('flash'), 200);
+            }
+        });
+        
+        // Toggle suara
+        soundToggle.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            soundToggle.textContent = soundEnabled ? "🔊 SUARA: ON" : "🔇 SUARA: OFF";
+            
+            if (soundEnabled) {
+                playSound(500, 0.1, 'sine', 0.2);
+            }
+        });
+        
+        // Inisialisasi
+        function init() {
+            setTimeout(() => {
+                playSound(200, 0.2, 'sine', 0.1);
+                playSound(300, 0.2, 'sine', 0.1);
+            }, 500);
+        }
+        
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
